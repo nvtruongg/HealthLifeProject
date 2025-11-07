@@ -6,11 +6,12 @@ package com.healthlife.controller;
 
 import com.healthlife.dao.DanhMucDAO;
 import com.healthlife.dao.SanPhamDAO;
+import com.healthlife.dao.interfaces.ISanPhamService;
 import com.healthlife.model.DanhMuc;
 import com.healthlife.model.SanPham;
 import com.healthlife.service.DanhMucService;
 import com.healthlife.service.IDanhMucService;
-import com.healthlife.service.ISanPhamService;
+
 import com.healthlife.service.SanPhamService;
 import java.io.IOException;
 import java.io.PrintWriter;
