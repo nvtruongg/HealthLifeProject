@@ -4,9 +4,10 @@
  */
 package com.healthlife.controller;
 
+import com.healthlife.dao.interfaces.ISanPhamService;
 import com.healthlife.service.DanhMucService;
 import com.healthlife.service.IDanhMucService;
-import com.healthlife.service.ISanPhamService;
+
 import com.healthlife.service.SanPhamService;
 
 import com.healthlife.model.DanhMuc;
