@@ -9,32 +9,49 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
+// Giả sử có DanhMucService và DanhGiaService
+import com.healthlife.service.DanhMucService;
+
+import com.healthlife.model.DanhMuc;
 
 @WebServlet(name = "ProductDetailServlet", urlPatterns = {"/detail"})
 public class ProductDetailServlet extends HttpServlet {
     private ISanPhamService sanPhamService = new SanPhamService();
+    private DanhMucService danhMucService = new DanhMucService();
+    
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy ID sản phẩm từ tham số URL (pid)
         int productId;
         try {
             productId = Integer.parseInt(request.getParameter("pid"));
         } catch (NumberFormatException e) {
-            response.sendRedirect("home"); // Redirect nếu ID không hợp lệ
+            response.sendRedirect("home");
             return;
         }
 
-        // Lấy sản phẩm từ Service
         SanPham product = sanPhamService.getProductById(productId);
-
-        if (product != null) {
-            // Truyền dữ liệu sang JSP
-            request.setAttribute("product", product);
-            request.getRequestDispatcher("/detail.jsp").forward(request, response);
-        } else {
-            response.sendRedirect("home"); // Redirect nếu không tìm thấy
+        if (product == null) {
+            response.sendRedirect("home");
+            return;
         }
+
+        // Sản phẩm liên quan
+        List<SanPham> relatedProducts = sanPhamService.getProductsByCategoryID(String.valueOf(product.getIdDanhMuc()));
+
+        // Đánh giá
+        
+
+        // Danh mục cho navbar
+        List<DanhMuc> listC = danhMucService.getAllCategories();
+
+        request.setAttribute("product", product);
+        request.setAttribute("relatedProducts", relatedProducts);
+        ;
+        request.setAttribute("listC", listC);
+        request.getRequestDispatcher("/detail.jsp").forward(request, response);
     }
 }
