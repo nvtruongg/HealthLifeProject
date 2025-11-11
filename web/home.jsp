@@ -1,14 +1,12 @@
-<%-- 
-    Document   : home.jsp
+<%--
+    Document : home.jsp
     Created on : Oct 25, 2025, 6:20:41 PM
-    Author     : Nguyen Viet Truong
+    Author : Nguyen Viet Truong
 --%>
-
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%-- Thêm thư viện JSTL (Rất quan trọng) --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- Thêm thư viện format số và tiền tệ --%>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="header.jsp" %> <!-- Include header -->
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -16,117 +14,118 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Trang chủ - HealthLife</title>
-        
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Thêm CSS tùy chỉnh cho Card sản phẩm -->
         <style>
+            .section-title {
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: #333;
+                position: relative;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            .section-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+                height: 4px;
+                background: linear-gradient(to right, #28a745, #007bff);
+            }
             .product-card {
-                transition: box-shadow 0.3s ease;
+                border: 1px solid #eee;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: transform 0.3s, box-shadow 0.3s;
+                overflow: hidden;
+                background: #fff;
             }
             .product-card:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                transform: translateY(-5px);
+                box-shadow: 0 6px 18px rgba(40,167,69,0.2);
             }
             .product-card img {
                 width: 100%;
-                height: 250px; /* Cố định chiều cao ảnh */
-                object-fit: contain; /* Hiển thị ảnh vừa vặn, không bị méo */
+                height: 250px;
+                object-fit: contain;
                 padding: 10px;
+                background: #f8f9fa;
             }
             .card-title {
-                /* Giới hạn tên sản phẩm chỉ 2 dòng */
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                height: 2.5em; /* Chiều cao tương đương 2 dòng */
-                font-size: 1rem;
+                height: 2.5em;
+                font-size: 1.1rem;
+                color: #333;
+                font-weight: 500;
+            }
+            .card-title a {
+                color: #333;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            .card-title a:hover {
+                color: #28a745;
             }
             .card-price {
-                font-size: 1.1rem;
+                font-size: 1.3rem;
                 font-weight: bold;
-                color: #d70018; /* Màu đỏ cho giá */
+                color: #dc3545;
+                margin-top: 10px;
+            }
+            .btn-primary {
+                background-color: #28a745;
+                border-color: #28a745;
+                transition: background-color 0.3s;
+            }
+            .btn-primary:hover {
+                background-color: #218838;
+                border-color: #218838;
+            }
+            @media (max-width: 768px) {
+                .section-title { font-size: 1.8rem; }
+                .product-card img { height: 200px; }
+                .col-lg-3 { flex: 0 0 50%; max-width: 50%; margin-bottom: 20px; }
+            }
+            @media (max-width: 576px) {
+                .col-lg-3 { flex: 0 0 100%; max-width: 100%; }
             }
         </style>
     </head>
     <body>
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="home">HealthLife</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="home">Trang Chủ</a>
-                        </li>
-                        
-                        <c:forEach items="${listC}" var="cat">
-                            <li class="nav-item">
-                                <a class="nav-link" href="shop?cid=${cat.id}">${cat.tenDanhMuc}</a>
-                            </li>
-                        </c:forEach>
-                        
-                    </ul>
-                    <ul class="navbar-nav">
-                 <!-- Menu hiện có -->
-                           </ul>
-                   <!-- Thêm form tìm kiếm -->
-                   <form class="d-flex ms-auto" action="search" method="get">
-                         <input class="form-control me-2" type="search" name="keyword" placeholder="Tìm sản phẩm..." aria-label="Search">
-                          <button class="btn btn-outline-success" type="submit">Tìm</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Phần nội dung chính -->
         <div class="container mt-4">
             <div class="row">
-                <!-- Tiêu đề trang -->
                 <div class="col-12">
-                    <h1 class="mb-3">Sản phẩm Nổi Bật</h1>
+                    <h1 class="section-title">Sản phẩm Nổi Bật</h1>
                 </div>
-
-                <!-- PHẦN MỚI: Hiển thị sản phẩm -->
-                <!-- Lặp qua danh sách sản phẩm "listP" -->
                 <c:forEach items="${listP}" var="p">
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <!-- Sử dụng Bootstrap Card -->
                         <div class="card h-100 product-card">
-                            <!-- Link đến trang chi tiết sản phẩm (sẽ làm sau) -->
                             <a href="detail?pid=${p.id}">
-                             <img src="${p.hinhAnhDaiDien}" class="card-img-top" alt="${p.tenSanPham}">
+                                <img src="${p.hinhAnhDaiDien}" class="card-img-top" alt="${p.tenSanPham}">
                             </a>
-                            
                             <div class="card-body d-flex flex-column">
-                                <!-- Tên sản phẩm -->
                                 <h5 class="card-title">
-                                 <a href="detail?pid=${p.id}" class="text-dark text-decoration-none">${p.tenSanPham}</a>
+                                    <a href="detail?pid=${p.id}">${p.tenSanPham}</a>
                                 </h5>
-                                
-                                <!-- Giá sản phẩm -->
                                 <p class="card-text card-price mt-auto">
-                                    <%-- Định dạng giá tiền kiểu Việt Nam --%>
-                                    <fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${p.giaBan}" /> đ
+                                    <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaBan}" /> đ
                                 </p>
-                                
-                                <!-- Nút Thêm vào giỏ (sẽ làm sau) -->
                                 <a href="#" class="btn btn-primary mt-2">Thêm vào giỏ</a>
                             </div>
                         </div>
                     </div>
                 </c:forEach>
-               
                 <c:if test="${empty listP}">
                     <div class="col-12">
-                        <p class="text-center text-muted">Không có sản phẩm nào để hiển thị.</p>
+                        <p class="text-center text-muted h4">Không có sản phẩm nào để hiển thị.</p>
                     </div>
                 </c:if>
-
             </div>
         </div>
 
