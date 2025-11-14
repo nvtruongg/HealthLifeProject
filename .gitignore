@@ -1,25 +1,14 @@
-# Java / NetBeans project
 
-# Bỏ qua file cấu hình cá nhân
-appsettings.json
-project.properties
+# === IDE FILES ===
+*.iml
+*.iws
+*.ipr
 
-# Bỏ qua thư mục build / dist
-/build/
-dist/
-target/
 
-# Bỏ qua NetBeans private configuration
-nbproject/private/
-
-# Bỏ qua các file sinh tự động của NetBeans
-nbproject/genfiles.properties
-
-# Bỏ qua file tạm / log
+# === LOGS & TEMP FILES ===
 *.log
 *.tmp
-*.cache
+*.bak
+*.swp
+*.DS_Store
 
-# Bỏ qua IDE metadata
-*.iml
-.idea/
