@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
             if ("admin".equals(user.getRole())) {
                 response.sendRedirect("admin.jsp");
             } else {
-                response.sendRedirect("home");
+                response.sendRedirect("shop");
             }
         } else {
             request.setAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");

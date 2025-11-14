@@ -6,14 +6,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ include file="header.jsp" %> <!-- Include header -->
-
+<%@ include file="header.jsp" %>
+<%@include file="navbar.jsp" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sản phẩm - HealthLife</title>
+        <title>${pageTile} - HealthLife</title>
         <style>
             .section-title {
                 font-size: 2.2rem;
@@ -95,22 +95,23 @@
             @media (max-width: 576px) {
                 .col-lg-3 { flex: 0 0 100%; max-width: 100%; }
             }
+            /* CSS CHO TOAST */
+            .toast-container {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 1055;
+            }
         </style>
     </head>
     <body>
+
         <div class="container mt-4">
             <div class="row">
                 <div class="col-12">
-                    <c:set var="categoryName" value="${param.cid != null ? 'Danh mục: ' : 'Tất cả Sản phẩm'}" />
-                    <c:if test="${not empty param.cid}">
-                        <c:forEach items="${listC}" var="cat">
-                            <c:if test="${cat.id == param.cid}">
-                                <c:set var="categoryName" value="Danh mục: ${cat.tenDanhMuc}" />
-                            </c:if>
-                        </c:forEach>
-                    </c:if>
-                    <h1 class="section-title">${categoryName}</h1>
-                </div>
+                    <h1 class="section-title">${pageTile}</h1>
+                </div>   
+                <!-- Lưới snr phẩm -->
                 <c:forEach items="${listP}" var="p">
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                         <div class="card h-100 product-card">
@@ -124,7 +125,10 @@
                                 <p class="card-text card-price mt-auto">
                                     <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaBan}" /> đ
                                 </p>
-                                <a href="#" class="btn btn-primary mt-2">Thêm vào giỏ</a>
+                                <button type="button" class="btn btn-primary mt-2 btn-add-to-cart"
+                                        data-product-id="${p.id}">
+                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -136,7 +140,62 @@
                 </c:if>
             </div>
         </div>
+                
+        <%@include file="footer.jsp" %>
+        
+        <!-- KHUNG THÔNG BÁO TOAST -->
+        <div class="toast-container">
+            <div id="addToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto"><i class="bi bi-check-circle-fill"></i> Thành công!</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toast-message-body">
+                    Sản phẩm đã được thêm vào giỏ hàng.
+                </div>
+            </div>
+        </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- SCRIPT AJAX -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+                
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault(); 
+                        const productId = this.dataset.productId;
+                        
+                        fetch('cart-handler?action=add&id=' + productId)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // 1. Cập nhật số lượng trên Navbar (trong header.jsp)
+                                    const cartBadge = document.getElementById('cart-count-badge');
+                                    if(cartBadge) {
+                                        cartBadge.innerText = data.cartItemCount;
+                                    }
+                                    
+                                    // 2. Hiển thị thông báo Toast
+                                    const toastEl = document.getElementById('addToast');
+                                    const toastMessageBody = document.getElementById('toast-message-body');
+                                    
+                                    toastMessageBody.innerText = data.message;
+                                    
+                                    // Khởi tạo Toast MỚI mỗi lần click
+                                    const addToast = new bootstrap.Toast(toastEl);
+                                    addToast.show();
+                                    
+                                } else {
+                                    // Xử lý lỗi
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

@@ -1,6 +1,6 @@
 package com.healthlife.controller;
 
-import com.healthlife.dao.interfaces.ISanPhamService;
+import com.healthlife.service.ISanPhamService;
 import com.healthlife.model.SanPham;
 import com.healthlife.service.SanPhamService;
 import jakarta.servlet.ServletException;

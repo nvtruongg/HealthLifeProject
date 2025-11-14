@@ -1,2 +1,25 @@
-/nbproject/private/
+# Java / NetBeans project
+
+# Bỏ qua file cấu hình cá nhân
+appsettings.json
+project.properties
+
+# Bỏ qua thư mục build / dist
 /build/
+dist/
+target/
+
+# Bỏ qua NetBeans private configuration
+nbproject/private/
+
+# Bỏ qua các file sinh tự động của NetBeans
+nbproject/genfiles.properties
+
+# Bỏ qua file tạm / log
+*.log
+*.tmp
+*.cache
+
+# Bỏ qua IDE metadata
+*.iml
+.idea/

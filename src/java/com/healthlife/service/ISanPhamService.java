@@ -1,4 +1,4 @@
-package com.healthlife.dao.interfaces;
+package com.healthlife.service;
 
 import com.healthlife.model.SanPham;
 import java.util.List;
