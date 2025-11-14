@@ -1,2 +1,14 @@
-/nbproject/private/
-/build/
+
+# === IDE FILES ===
+*.iml
+*.iws
+*.ipr
+
+
+# === LOGS & TEMP FILES ===
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+

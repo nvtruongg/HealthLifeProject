@@ -4,7 +4,8 @@
 <!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- Thêm Bootstrap Icons (icon giỏ hàng và tài khoản) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <header>
     <!-- Thanh trên cùng -->
     <div class="bg-primary text-white py-1 small">
@@ -13,7 +14,7 @@
                 💊 Sức khỏe của bạn – Niềm vui của chúng tôi
             </div>
             <div>
-                📞 Hotline: <strong>0969.333.298</strong>
+                📞 Hotline: <strong>037 999 6828</strong>
             </div>
         </div>
     </div>
@@ -44,40 +45,45 @@
 
                 <!-- Biểu tượng tài khoản và giỏ hàng -->
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- Logic Tài khoản (Tự động kiểm tra session "account") -->
+                    <c:if test="${empty sessionScope.user}">
+                        <li class="nav-item me-3">
+                            <a href="login.jsp" class="nav-link text-white">
+                                <i class="bi bi-person-fill" style="font-size: 1.2rem;"></i> <small>Tài khoản</small>
+                            </a>
+                        </li>
+                    </c:if>
+                    <c:if test="${not empty sessionScope.user}">
+                         <li class="nav-item dropdown me-3">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle" style="font-size: 1.2rem;"></i> <small>Chào, ${sessionScope.user.fullname}</small>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
+                                <li><a class="dropdown-item" href="profile.jsp">Thông tin tài khoản</a></li>
+                                <li><a class="dropdown-item" href="order-history">Lịch sử đơn hàng</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="logout">Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                    </c:if>
                     <li class="nav-item me-3">
-                        <a href="dang_nhap.jsp" class="nav-link text-white">
-                            👤 <small>Tài khoản</small>
-                        </a>
-                    </li>
-                    <li class="nav-item me-3">
-                        <a href="gio_hang.jsp" class="nav-link text-white position-relative">
-                            🛒
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        <!-- 1. Tính toán số lượng -->
+                        <c:set var="cartItemCount" value="${empty sessionScope.cart ? 0 : sessionScope.cart.tongSoLuongTatCaItems}" />
+                        
+                        <!-- 2. href trỏ đến CartViewServlet -->
+                        <a href="cart-view" class="nav-link text-white position-relative">
+                            <i class="bi bi-cart-fill" style="font-size: 1.2rem;"></i>
+                            <!-- 3. Gán ID cho badge để AJAX cập nhật -->
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                                  id="cart-count-badge">
+                                ${cartItemCount}
+                            </span>
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-
-    <!-- Thanh menu danh mục -->
-    <div class="bg-light border-bottom">
-        <div class="container">
-            <ul class="nav nav-pills nav-fill py-2">
-                <li class="nav-item">
-                    <a class="nav-link text-dark fw-bold" href="home">Trang chủ</a>
-                </li>
-                <c:forEach items="${listC}" var="cat">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="shop?cid=${cat.id}">${cat.tenDanhMuc}</a>
-                    </li>
-                </c:forEach>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="lien_he.jsp">Liên hệ</a>
-                </li>
-            </ul>
-        </div>
-    </div>
 </header>
 
 <style>

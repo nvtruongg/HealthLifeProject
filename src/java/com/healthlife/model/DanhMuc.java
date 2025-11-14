@@ -4,6 +4,8 @@
  */
 package com.healthlife.model;
 
+import java.util.List;
+
 /**
  *
  * @author Nguyen Viet Truong
@@ -11,10 +13,11 @@ package com.healthlife.model;
 public class DanhMuc {
     private int id;
     private String tenDanhMuc;
-    private int idDanhMucCha;
+    private Integer idDanhMucCha;
     private String hinhAnh;
     private String moTa;
-
+    private List<DanhMuc> danhMucCon;
+    
     public DanhMuc() {
     }
 
@@ -42,7 +45,7 @@ public class DanhMuc {
         this.tenDanhMuc = tenDanhMuc;
     }
 
-    public int getIdDanhMucCha() {
+    public Integer getIdDanhMucCha() {
         return idDanhMucCha;
     }
 
@@ -66,5 +69,11 @@ public class DanhMuc {
         this.moTa = moTa;
     }
     
-    
+    public List<DanhMuc> getDanhMucCon() {
+        return danhMucCon;
+    }
+
+    public void setDanhMucCon(List<DanhMuc> danhMucCon) {
+        this.danhMucCon = danhMucCon;
+    }
 }

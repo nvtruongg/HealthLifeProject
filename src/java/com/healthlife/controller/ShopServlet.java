@@ -4,9 +4,7 @@
  */
 package com.healthlife.controller;
 
-import com.healthlife.dao.DanhMucDAO;
-import com.healthlife.dao.SanPhamDAO;
-import com.healthlife.dao.interfaces.ISanPhamService;
+import com.healthlife.service.ISanPhamService;
 import com.healthlife.model.DanhMuc;
 import com.healthlife.model.SanPham;
 import com.healthlife.service.DanhMucService;
@@ -56,14 +54,38 @@ public class ShopServlet extends HttpServlet {
 
         // 2. Tải danh sách Danh Mục (cho Navbar)
         List<DanhMuc> listCategories = danhMucService.getAllCategories();
-
-        // 3. Tải danh sách Sản Phẩm
-        List<SanPham> listProducts = sanPhamService.getProductsByCategoryID(categoryId);
-
-        // 4. Đặt dữ liệu lên request
         request.setAttribute("listC", listCategories); // Dùng cho Navbar
-        request.setAttribute("listP", listProducts); // Danh sách sản phẩm đã lọc
-        request.setAttribute("activeCid", categoryId); // Đánh dấu danh mục đang được chọn
+        
+        // 3. Tải danh sách Sản Phẩm (Logic gộp)
+        List<SanPham> listProducts;
+        String pageTitle;
+        if (categoryId != null && !categoryId.isEmpty()) {
+            pageTitle = "Danh Mục";
+            // Nếu CÓ cid -> Lọc theo danh mục
+            listProducts = sanPhamService.getProductsByCategoryID(categoryId);
+            // Đặt cid đang active để JSP tô màu menu
+            for(DanhMuc parent : listCategories){
+                if(parent.getId() == Integer.parseInt(categoryId)){
+                    pageTitle = parent.getTenDanhMuc();
+                    break;
+                }
+                for(DanhMuc child : parent.getDanhMucCon()){
+                    if(child.getId() == Integer.parseInt(categoryId)){
+                        pageTitle = child.getTenDanhMuc();
+                        break;
+                    }
+                }
+            }
+            request.setAttribute("activeCid", categoryId); 
+        } else {
+            // Nếu KHÔNG có cid -> Lấy tất cả sản phẩm
+            listProducts = sanPhamService.getAllProducts();
+            pageTitle = "Tất cả sản phẩm";
+            
+        }
+
+        request.setAttribute("listP", listProducts); // Danh sách sản phẩm đã lọc 
+        request.setAttribute("pageTile", pageTitle);
 
         // 5. Forward sang shop.jsp
         request.getRequestDispatcher("shop.jsp").forward(request, response);

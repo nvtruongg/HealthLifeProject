@@ -23,7 +23,7 @@ public class DBContext {
         try {
             String url = "jdbc:mysql://localhost:3306/db_healthlife";
             String user = "root";
-            String pass = "";
+            String pass = "123456";
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, user, pass);
