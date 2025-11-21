@@ -4,13 +4,14 @@
  */
 package com.healthlife.dao.interfaces;
 
-import com.healthlife.model.Cart;
+import com.healthlife.model.CartItem;
 import com.healthlife.model.DonHang;
+import java.util.Map;
 
 /**
  *
  * @author Nguyen Viet Truong
  */
 public interface IOrderDAO {
-    int saveOrder(DonHang donHang, Cart cart) throws Exception;
+    int saveOrder(DonHang donHang, Map<Integer, CartItem> selectedItems) throws Exception;
 }

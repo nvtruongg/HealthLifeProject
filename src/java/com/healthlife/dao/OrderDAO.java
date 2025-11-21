@@ -6,12 +6,10 @@ package com.healthlife.dao;
 
 import com.healthlife.dao.interfaces.IOrderDAO;
 import com.healthlife.db.DBContext;
-import com.healthlife.model.Cart;
 import com.healthlife.model.CartItem;
 import com.healthlife.model.DonHang;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 /**
  *
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
 public class OrderDAO implements IOrderDAO {
 
     @Override
-    public int saveOrder(DonHang donHang, Cart cart) throws SQLException, Exception {
+    public int saveOrder(DonHang donHang, Map<Integer, CartItem> selectedItems) throws SQLException, Exception {
         Connection conn = null;
         PreparedStatement psDonHang = null;
         PreparedStatement psChiTiet = null;
@@ -75,7 +73,7 @@ public class OrderDAO implements IOrderDAO {
             psChiTiet = conn.prepareStatement(sqlChiTiet);
             psUpdateStock = conn.prepareStatement(sqlStock);
             
-            for (CartItem item : cart.getSelectedItems().values()) {
+            for (CartItem item : selectedItems.values()) {
                 // Thêm vào chi tiết đơn hàng
                 psChiTiet.setInt(1, orderId);
                 psChiTiet.setInt(2, item.getSanPham().getId());

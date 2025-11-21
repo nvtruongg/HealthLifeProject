@@ -56,6 +56,6 @@ public class OrderService implements IOrderService{
         donHang.setTongThanhToan(cart.getTongTienHangDaChon().add(donHang.getPhiVanChuyen()));
 
         // 4. Mọi thứ OK, gọi DAO để lưu (chỉ lưu các SP đã chọn)
-        return orderDAO.saveOrder(donHang, (Cart) selectedItems);
+        return orderDAO.saveOrder(donHang, selectedItems);
     }
 }

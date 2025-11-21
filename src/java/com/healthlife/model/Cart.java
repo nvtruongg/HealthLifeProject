@@ -100,4 +100,24 @@ public class Cart {
     public int getTongSoLuongTatCaItems() {
         return items.values().stream().mapToInt(CartItem::getSoLuong).sum();
     }
+    /**
+     * Chọn hoặc Bỏ chọn tất cả sản phẩm
+     * @param select true = chọn hết, false = bỏ chọn hết
+     */
+    public void setAllSelected(boolean select) {
+        for (CartItem item : items.values()) {
+            item.setSelected(select);
+        }
+    }
+    
+    /**
+     * Kiểm tra xem có phải tất cả đang được chọn không
+     */
+    public boolean isAllSelected() {
+        if (items.isEmpty()) return false;
+        for (CartItem item : items.values()) {
+            if (!item.isSelected()) return false;
+        }
+        return true;
+    }
 }

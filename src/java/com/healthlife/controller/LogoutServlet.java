@@ -19,6 +19,6 @@ public class LogoutServlet extends HttpServlet {
         }
 
         // Sau khi đăng xuất -> trở về trang chủ
-        response.sendRedirect("home.jsp");
+        response.sendRedirect("shop");
     }
 }

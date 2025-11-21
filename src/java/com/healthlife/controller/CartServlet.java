@@ -38,7 +38,19 @@ public class CartServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         // Lấy service sản phẩm (cần để lấy SP từ ID)
-        this.sanPhamService = new SanPhamService(); 
+        this.sanPhamService = new SanPhamService();
+    }
+
+    private Cart getCartFromSession(HttpSession session) {
+        Object obj = session.getAttribute("cart");
+
+        if (obj instanceof Cart) {
+            return (Cart) obj;
+        }
+
+        Cart newCart = new Cart();
+        session.setAttribute("cart", newCart);
+        return newCart;
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -51,40 +63,42 @@ public class CartServlet extends HttpServlet {
             response.sendRedirect("cart-view"); // Hoặc trang xem giỏ hàng
             return;
         }
-        
+
         // 1. Lấy giỏ hàng từ session
         HttpSession session = request.getSession();
-        Cart cart = (Cart) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new Cart();
-        }
+        Cart cart = getCartFromSession(session);
 
         try {
             // ID không bắt buộc cho tất cả action (ví dụ: select-all)
             String idParam = request.getParameter("id");
             int idSanPham = (idParam != null) ? Integer.parseInt(idParam) : -1;
-            
+
             switch (action) {
                 case "add":
                     SanPham sp = sanPhamService.getProductById(idSanPham);
-                    
+
                     if (sp != null) {
                         int soLuong = 1; //mặc định thêm 1
                         cart.themSanPham(sp, soLuong);
                     }
                     break;
-                    
+
                 case "update":
                     int soLuongMoi = Integer.parseInt(request.getParameter("quantity"));
                     cart.capNhatSoLuong(idSanPham, soLuongMoi);
                     break;
-                    
+
                 case "remove":
                     cart.xoaSanPham(idSanPham);
                     break;
                 // ACTION ĐỂ XỬ LÝ CHECKBOX
                 case "toggle":
                     cart.toggleItemSelected(idSanPham);
+                    break;
+                case "toggle-all":
+                    // Logic: Nếu đang chưa chọn hết -> Chọn hết. Nếu đã chọn hết -> Bỏ chọn hết.
+                    boolean targetState = !cart.isAllSelected();
+                    cart.setAllSelected(targetState);
                     break;
             }
 
@@ -96,20 +110,20 @@ public class CartServlet extends HttpServlet {
                 // YÊU CẦU MỚI: Trả về JSON, không chuyển hướng
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                
+
                 int totalItems = cart.getTongSoLuongTatCaItems();
                 String message = "Thêm sản phẩm vào giỏ hàng thành công!";
-                
+
                 // Tạo chuỗi JSON thủ công
                 String jsonResponse = String.format("{\"success\": true, \"message\": \"%s\", \"cartItemCount\": %d}", message, totalItems);
-                
+
                 PrintWriter out = response.getWriter();
                 out.print(jsonResponse);
                 out.flush();
-                
+
             } else {
                 // Các action khác (update, remove, toggle) vẫn chuyển hướng về giỏ hàng
-                response.sendRedirect("cart-view"); 
+                response.sendRedirect("cart-view");
             }
 
         } catch (NumberFormatException e) {

@@ -37,9 +37,9 @@
                         </h1>
                         <p class="hero-subtitle animate-fade-in-delay">
                             Thực phẩm chức năng chính hãng - Uy tín hàng đầu Việt Nam
-                        </p>
+                        </p>                       
                         <div class="hero-buttons animate-fade-in-delay-2">
-                            <a href="${pageContext.request.contextPath}/products" class="btn btn-primary">
+                            <a href="${pageContext.request.contextPath}/shop" class="btn btn-primary">
                                 <i class="fas fa-shopping-bag"></i> Khám phá ngay
                             </a>
                             <a href="#about" class="btn btn-outline">
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                     <div class="hero-image animate-float">
-                        <img src="${pageContext.request.contextPath}/assets/images/hero-product.png" alt="Featured Products">
+                        <img src="${pageContext.request.contextPath}/Images/logo.png" alt="Featured Products">
                     </div>
                 </div>
             </div>
