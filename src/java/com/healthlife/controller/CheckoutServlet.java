@@ -6,6 +6,7 @@ package com.healthlife.controller;
 
 import com.healthlife.model.Cart;
 import com.healthlife.model.DonHang;
+import com.healthlife.model.NguoiDung;
 import com.healthlife.service.IOrderService;
 import com.healthlife.service.OrderService;
 import java.io.IOException;
@@ -31,32 +32,26 @@ public class CheckoutServlet extends HttpServlet {
     public void init() throws ServletException {
         this.orderService = new OrderService();
     }
+
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * HÀM QUAN TRỌNG NHẤT: Hàm này giúp lấy giỏ hàng an toàn. Nếu session đang
+     * chứa HashMap (lỗi của bạn), nó sẽ phát hiện ra, hủy cái HashMap đó đi và
+     * trả về một Cart mới để không bị crash.
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CheckoutServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CheckoutServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    private Cart getCartFromSession(HttpSession session) {
+        Object obj = session.getAttribute("cart");
+
+        // Kiểm tra xem object có tồn tại và CÓ ĐÚNG LÀ CLASS CART KHÔNG?
+        if (obj != null && obj instanceof Cart) {
+            return (Cart) obj; // Ép kiểu an toàn
+        } else {
+            // Nếu null hoặc bị sai kiểu (là HashMap), ta reset lại
+            System.out.println("DEBUG: Phát hiện giỏ hàng bị sai kiểu dữ liệu (" + (obj == null ? "null" : obj.getClass().getName()) + "). Đang reset...");
+            Cart newCart = new Cart();
+            session.setAttribute("cart", newCart); // Ghi đè lại cho đúng
+            return newCart;
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -69,17 +64,19 @@ public class CheckoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("------------ CHECKOUT SERVLET PHIEN BAN MOI DA CHAY ------------");
         HttpSession session = request.getSession();
 
-//        // 1. Yêu cầu đăng nhập (Rất quan trọng)
-//        NguoiDung user = (NguoiDung) session.getAttribute("account"); // "account" là key session do nhóm đăng nhập quy định
-//        if (user == null) {
-//            response.sendRedirect("login.jsp"); // Chuyển đến trang đăng nhập
-//            return;
-//        }
+        // 1. Yêu cầu đăng nhập (Rất quan trọng)
+        NguoiDung user = (NguoiDung) session.getAttribute("user");
+        if (user == null) {
+            response.sendRedirect("login.jsp"); // Chuyển đến trang đăng nhập
+            return;
+        }
 
         // 2. Yêu cầu giỏ hàng không được rỗng
-        Cart cart = (Cart) session.getAttribute("cart");
+        Cart cart = getCartFromSession(session);
+        
         if (cart == null || cart.getTongSoLuongItemsDaChon() == 0) {
             response.sendRedirect("cart-view"); // Về giỏ hàng
             return;
@@ -103,13 +100,13 @@ public class CheckoutServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         // 1. Kiểm tra lại đăng nhập và giỏ hàng
-        //NguoiDung user = (NguoiDung) session.getAttribute("account");
-        Cart cart = (Cart) session.getAttribute("cart");
+        NguoiDung user = (NguoiDung) session.getAttribute("user");
+        Cart cart = getCartFromSession(session);
 
-//        if (user == null) {
-//            response.sendRedirect("login.jsp");
-//            return;
-//        }
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         if (cart == null || cart.getTongSoLuongItemsDaChon() == 0) {
             response.sendRedirect("cart-view");
             return;
@@ -119,37 +116,33 @@ public class CheckoutServlet extends HttpServlet {
         String tenNguoiNhan = request.getParameter("tenNguoiNhan");
         String soDienThoai = request.getParameter("soDienThoai");
         String diaChiGiaoHang = request.getParameter("diaChiGiaoHang");
-        
+
         try {
             // 3. Chuẩn bị đối tượng DonHang
             DonHang donHang = new DonHang();
-            donHang.setIdNguoiDung(111);
+            donHang.setIdNguoiDung(user.getId());
             donHang.setMaDonHang("HLF-" + System.currentTimeMillis()); // Tạo mã đơn hàng
             donHang.setTenNguoiNhan(tenNguoiNhan);
             donHang.setSoDienThoaiNhan(soDienThoai);
             donHang.setDiaChiGiaoHang(diaChiGiaoHang);
-            donHang.setEmailNguoiNhan("new@gmail.com"); // Lấy từ user
+            donHang.setEmailNguoiNhan(user.getEmail()); // Lấy từ user
             BigDecimal phiVanChuyen = new BigDecimal("15000.00"); // Tạm thời
             donHang.setPhiVanChuyen(phiVanChuyen);
-            
+
             // TỔNG THANH TOÁN = TỔNG TIỀN HÀNG ĐÃ CHỌN + PHÍ VẬN CHUYỂN
             BigDecimal tongTienHangChon = cart.getTongTienHangDaChon();
             donHang.setTongThanhToan(tongTienHangChon.add(phiVanChuyen));
-            
-            donHang.setPhuongThucThanhToan("cod"); 
-            
+
+            donHang.setPhuongThucThanhToan("cod");
+
             // --- GỌI SERVICE ---
-            // Service sẽ tự động:
-            // 1. Kiểm tra tồn kho
-            // 2. Lưu đơn hàng (chỉ SP đã chọn)
-            // 3. Trừ tồn kho
             orderService.placeOrder(donHang, cart);
-            
-            // 5. Xóa giỏ hàng (hoặc chỉ xóa các SP đã mua)
+
+            //Xóa giỏ hàng (hoặc chỉ xóa các SP đã mua)
             // Tốt nhất là xóa toàn bộ
             session.removeAttribute("cart");
-            
-            // 6. Chuyển đến trang Cảm ơn
+
+            //Chuyển đến trang Thành công
             response.sendRedirect("order-success.jsp"); // Tạo trang này
 
         } catch (Exception e) {

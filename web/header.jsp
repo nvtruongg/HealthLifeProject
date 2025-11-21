@@ -23,8 +23,8 @@
     <nav class="navbar navbar-expand-lg" style="background-color: #003D9D;">
         <div class="container">
             <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center text-white" href="index.jsp">
-                <img src="Images/logo.png" alt="HealthLife" height="45" class="me-2">
+            <a class="navbar-brand d-flex align-items-center text-white flex-shink-0" href="index">
+                <img src="Images/logo.png" alt="HealthLife" height="45" class="me-2 bg-white rounded-circle p-1">
                 <div>
                     <strong>HEALTHLIFE</strong><br>
                     <small class="text-light">Nhà thuốc uy tín</small>
@@ -38,25 +38,29 @@
 
             <!-- Thanh tìm kiếm ở giữa -->
             <div class="collapse navbar-collapse" id="navbarMain">
-                <form class="d-flex mx-auto w-75" action="search" method="get">
+                <form class="d-flex mx-lg-4 my-2 my-lg-0 flex-grow-1" action="search" method="get">
                     <input class="form-control me-2" type="search" name="keyword" placeholder="Tìm thuốc, thực phẩm chức năng, thiết bị y tế..." aria-label="Search">
-                    <button class="btn btn-warning" type="submit">🔍</button>
+                    <button class="btn btn-warning rounded-start-0 px-3" type="submit">🔍</button>
                 </form>
 
                 <!-- Biểu tượng tài khoản và giỏ hàng -->
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav align-items-center flex-row justify-content-end gap-3">
                     <!-- Logic Tài khoản (Tự động kiểm tra session "account") -->
                     <c:if test="${empty sessionScope.user}">
                         <li class="nav-item me-3">
-                            <a href="login.jsp" class="nav-link text-white">
-                                <i class="bi bi-person-fill" style="font-size: 1.2rem;"></i> <small>Tài khoản</small>
+                            <a href="login.jsp" class="nav-link text-white d-flex align-items-center fw-500 text-dark">
+                                <i class="bi bi-person-fill me-1 fs-5" style="font-size: 1.2rem;"></i> <small>Tài khoản</small>
                             </a>
                         </li>
                     </c:if>
                     <c:if test="${not empty sessionScope.user}">
-                         <li class="nav-item dropdown me-3">
-                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle" style="font-size: 1.2rem;"></i> <small>Chào, ${sessionScope.user.fullname}</small>
+                        <li class="nav-item dropdown me-3" style="z-index: 2000;">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-500" href="#" id="navbarDropdownAccount" role="button" 
+                               accesskey=""data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap;">
+                                <i class="bi bi-person-circle me-2 fs-5" style="font-size: 1.2rem;"></i> 
+                                <span class="d-inline-block text-truncate" style="max-width: 150px;">
+                                    Chào,${sessionScope.user.fullname}
+                                </span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
                                 <li><a class="dropdown-item" href="profile.jsp">Thông tin tài khoản</a></li>
@@ -69,7 +73,7 @@
                     <li class="nav-item me-3">
                         <!-- 1. Tính toán số lượng -->
                         <c:set var="cartItemCount" value="${empty sessionScope.cart ? 0 : sessionScope.cart.tongSoLuongTatCaItems}" />
-                        
+
                         <!-- 2. href trỏ đến CartViewServlet -->
                         <a href="cart-view" class="nav-link text-white position-relative">
                             <i class="bi bi-cart-fill" style="font-size: 1.2rem;"></i>
@@ -107,6 +111,17 @@
         color: #003D9D !important;
         background-color: #FFD43B !important;
         border-radius: 6px;
+    }
+    .dropdown-menu {
+        border: none;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+    }
+    .dropdown-item:active {
+        background-color: #003D9D;
     }
     .badge {
         font-size: 0.65rem;

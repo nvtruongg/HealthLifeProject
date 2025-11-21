@@ -13,42 +13,42 @@
         </button>
 
         <div class="collapse navbar-collapse" id="categoryNavbar">
-                <ul class="navbar-nav nav-pills justify-content-between w-100 py-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark fw-bold" href="shop">Trang chủ</a>
-                    </li>
+            <ul class="navbar-nav nav-pills justify-content-between w-100 py-2">
+                <li class="nav-item">
+                    <a class="nav-link text-dark fw-bold" href="shop">Trang chủ</a>
+                </li>
 
-                    <c:forEach items="${listC}" var="parentCat">
-                        <c:if test="${not empty parentCat.danhMucCon}">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown_${parentCat.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    ${parentCat.tenDanhMuc}
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown_${parentCat.id}">
-                                    <!-- Link cho chính danh mục cha -->
+                <c:forEach items="${listC}" var="parentCat">
+                    <c:if test="${not empty parentCat.danhMucCon}">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown_${parentCat.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ${parentCat.tenDanhMuc}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown_${parentCat.id}">
+                                <!-- Link cho chính danh mục cha -->
+                                <li>
+                                    <a class="dropdown-item" href="shop?cid=${parentCat.id}">
+                                        <strong>Xem tất cả "${parentCat.tenDanhMuc}"</strong>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>                            
+                                <!-- Lặp qua các DANH MỤC CON -->
+                                <c:forEach items="${parentCat.danhMucCon}" var="childCat">
                                     <li>
-                                        <a class="dropdown-item" href="shop?cid=${parentCat.id}">
-                                            <strong>Xem tất cả "${parentCat.tenDanhMuc}"</strong>
+                                        <a class="dropdown-item" href="shop?cid=${childCat.id}">
+                                            ${childCat.tenDanhMuc}
                                         </a>
                                     </li>
-                                    <li><hr class="dropdown-divider"></li>                            
-                                    <!-- Lặp qua các DANH MỤC CON -->
-                                    <c:forEach items="${parentCat.danhMucCon}" var="childCat">
-                                        <li>
-                                            <a class="dropdown-item" href="shop?cid=${childCat.id}">
-                                                ${childCat.tenDanhMuc}
-                                            </a>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
-                            </li>
-                        </c:if>
+                                </c:forEach>
+                            </ul>
+                        </li>
+                    </c:if>
 
-                    </c:forEach>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="contact.jsp">Liên hệ</a>
-                    </li>
-                </ul>
+                </c:forEach>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="contact.jsp">Liên hệ</a>
+                </li>
+            </ul>
 
         </div>
     </div>
@@ -71,5 +71,31 @@
 
         }
     }
+    /* Hiện menu khi hover vào li.dropdown */
+    @media (min-width: 992px) { /* Chỉ áp dụng cho desktop */
+        .navbar .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0; /* fix nháy nhảy */
+        }
+    }
 
+    /* Giữ style dropdown đẹp */
+    .dropdown-menu {
+        border-radius: 8px;
+        padding: 0.5rem 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        border: none;
+    }
+
+    /* Tăng click area cho link dropdown */
+    .dropdown-item {
+        padding: 8px 15px;
+    }
+
+    /* Hover cho dropdown-item */
+    .dropdown-item:hover {
+        background-color: #f5f5f5;
+        color: #003D9D;
+    }
+    
 </style>

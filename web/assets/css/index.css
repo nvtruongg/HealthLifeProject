@@ -55,10 +55,19 @@ body {
     transition: opacity 1s ease-in-out;
     display: flex;
     align-items: center;
+    
+    visibility: hidden;           /* Ẩn khỏi DOM */
+    pointer-events: none;         /* Không cho click */
+    z-index: 0;
 }
 
 .hero-slide.active {
     opacity: 1;
+    
+    /* FIX: Cho phép xuất hiện & tương tác */
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 5;
 }
 
 .hero-content {
@@ -94,6 +103,10 @@ body {
     display: flex;
     gap: 15px;
     margin-bottom: 40px;
+    
+     /* FIX: đảm bảo nút luôn ở trên tất cả slide */
+    position: relative;
+    z-index: 10;
 }
 
 .btn {

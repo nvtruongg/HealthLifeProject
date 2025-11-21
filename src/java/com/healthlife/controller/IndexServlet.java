@@ -4,6 +4,12 @@
  */
 package com.healthlife.controller;
 
+import com.healthlife.model.DanhMuc;
+import com.healthlife.model.SanPham;
+import com.healthlife.service.DanhMucService;
+import com.healthlife.service.IDanhMucService;
+import com.healthlife.service.ISanPhamService;
+import com.healthlife.service.SanPhamService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,13 +17,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
  * @author Nguyen Viet Truong
  */
-@WebServlet(name = "CartViewServlet", urlPatterns = {"/cart-view"})
-public class CartViewServlet extends HttpServlet {
+@WebServlet(name = "IndexServlet", urlPatterns = {"/index"})
+public class IndexServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -28,23 +35,44 @@ public class CartViewServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    IDanhMucService danhMucService;
+    ISanPhamService sanPhamService;
+
+    @Override
+    public void init() throws ServletException {
+        danhMucService = new DanhMucService();
+        sanPhamService = new SanPhamService();
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        Object obj = request.getSession().getAttribute("cart");
-        if (obj == null || !(obj instanceof com.healthlife.model.Cart)) {
-            request.getSession().setAttribute("cart", new com.healthlife.model.Cart());
+        try {
+            // --- THAY ĐỔI DUY NHẤT Ở ĐÂY ---
+            // List<DanhMuc> listC = danhMucService.getAllCategories(); (CŨ)
+            List<DanhMuc> listC = danhMucService.getAllCategories(); // (MỚI)
+            // -------------------------------
+            
+            // ... (code tải sản phẩm nổi bật giữ nguyên)
+            List<SanPham> allProducts = sanPhamService.getAllProducts();
+            List<SanPham> featuredProducts = allProducts.subList(0, Math.min(allProducts.size(), 8));
+
+            request.setAttribute("listC", listC); // listC bây giờ là danh sách CHA
+            request.setAttribute("listP_featured", featuredProducts);
+
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        request.getRequestDispatcher("cart.jsp").forward(request, response);
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CartViewServlet</title>");
+            out.println("<title>Servlet IndexServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CartViewServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet IndexServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
