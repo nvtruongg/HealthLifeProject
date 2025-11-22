@@ -135,4 +135,82 @@ public class SanPhamDAO implements ISanPhamDAO{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean addProduct(SanPham sp) {
+         String query = "INSERT INTO san_pham (ma_san_pham, ten_san_pham, id_danh_muc, id_thuong_hieu, " +
+                       "gia_goc, gia_ban, so_luong_ton, don_vi_tinh, trang_thai, mo_ta_ngan, mo_ta_chi_tiet, " +
+                       "thanh_phan, cong_dung, lieu_dung_cach_dung, bao_quan, hinh_anh_dai_dien) " +
+                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, sp.getMaSanPham());
+            ps.setString(2, sp.getTenSanPham());
+            ps.setInt(3, sp.getIdDanhMuc());
+            ps.setInt(4, sp.getIdThuongHieu());
+            ps.setBigDecimal(5, sp.getGiaGoc());
+            ps.setBigDecimal(6, sp.getGiaBan());
+            ps.setInt(7, sp.getSoLuongTon());
+            ps.setString(8, sp.getDonViTinh());
+            ps.setString(9, sp.getTrangThai());
+            ps.setString(10, sp.getMoTaNgan());
+            ps.setString(11, sp.getMoTaChiTiet());
+            ps.setString(12, sp.getThanhPhan());
+            ps.setString(13, sp.getCongDung());
+            ps.setString(14, sp.getLieuDungCachDung());
+            ps.setString(15, sp.getBaoQuan());
+            ps.setString(16, sp.getHinhAnhDaiDien());
+            
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateProduct(SanPham sp) {
+        String query = "UPDATE san_pham SET ma_san_pham=?, ten_san_pham=?, id_danh_muc=?, id_thuong_hieu=?, " +
+                       "gia_goc=?, gia_ban=?, so_luong_ton=?, don_vi_tinh=?, trang_thai=?, " +
+                       "mo_ta_ngan=?, mo_ta_chi_tiet=?, thanh_phan=?, cong_dung=?, lieu_dung_cach_dung=?, " +
+                       "bao_quan=?, hinh_anh_dai_dien=? WHERE id=?";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, sp.getMaSanPham());
+            ps.setString(2, sp.getTenSanPham());
+            ps.setInt(3, sp.getIdDanhMuc());
+            ps.setInt(4, sp.getIdThuongHieu());
+            ps.setBigDecimal(5, sp.getGiaGoc());
+            ps.setBigDecimal(6, sp.getGiaBan());
+            ps.setInt(7, sp.getSoLuongTon());
+            ps.setString(8, sp.getDonViTinh());
+            ps.setString(9, sp.getTrangThai());
+            ps.setString(10, sp.getMoTaNgan());
+            ps.setString(11, sp.getMoTaChiTiet());
+            ps.setString(12, sp.getThanhPhan());
+            ps.setString(13, sp.getCongDung());
+            ps.setString(14, sp.getLieuDungCachDung());
+            ps.setString(15, sp.getBaoQuan());
+            ps.setString(16, sp.getHinhAnhDaiDien()); // Cập nhật ảnh (nếu có logic xử lý ảnh)
+            ps.setInt(17, sp.getId());
+            
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteProduct(int id) {
+        String query = "DELETE FROM san_pham WHERE id = ?";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
