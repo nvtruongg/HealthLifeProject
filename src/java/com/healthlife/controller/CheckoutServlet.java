@@ -10,7 +10,6 @@ import com.healthlife.model.NguoiDung;
 import com.healthlife.service.IOrderService;
 import com.healthlife.service.OrderService;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -123,7 +122,7 @@ public class CheckoutServlet extends HttpServlet {
             donHang.setIdNguoiDung(user.getId());
             donHang.setMaDonHang("HLF-" + System.currentTimeMillis()); // Tạo mã đơn hàng
             donHang.setTenNguoiNhan(tenNguoiNhan);
-            donHang.setSoDienThoaiNhan(soDienThoai);
+            donHang.setSdtNhan(soDienThoai);
             donHang.setDiaChiGiaoHang(diaChiGiaoHang);
             donHang.setEmailNguoiNhan(user.getEmail()); // Lấy từ user
             BigDecimal phiVanChuyen = new BigDecimal("15000.00"); // Tạm thời

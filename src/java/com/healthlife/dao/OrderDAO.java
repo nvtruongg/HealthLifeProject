@@ -49,7 +49,7 @@ public class OrderDAO implements IOrderDAO {
             psDonHang.setInt(1, donHang.getIdNguoiDung());
             psDonHang.setString(2, donHang.getMaDonHang()); 
             psDonHang.setString(3, donHang.getTenNguoiNhan());
-            psDonHang.setString(4, donHang.getSoDienThoaiNhan());
+            psDonHang.setString(4, donHang.getSdtNhan());
             psDonHang.setString(5, donHang.getDiaChiGiaoHang());
             psDonHang.setString(6, donHang.getEmailNguoiNhan());
             psDonHang.setBigDecimal(7, donHang.getTongTienSanPham()); // Lấy tổng tiền đã chọn

@@ -26,8 +26,8 @@
         
         <!-- Logic "Xin chào, [Tên]" -->
         <c:choose>
-            <c:when test="${not empty sessionScope.account && not empty sessionScope.account.fullname}">
-                <span class="text-lg font-medium text-gray-700 hidden sm:block">Xin chào, ${fn:escapeXml(sessionScope.account.fullname)}!</span>
+            <c:when test="${not empty sessionScope.user && not empty sessionScope.user.fullname}">
+                <span class="text-lg font-medium text-gray-700 hidden sm:block">Xin chào, ${fn:escapeXml(sessionScope.user.fullname)}!</span>
             </c:when>
             <c:otherwise>
                 <span class="text-lg font-medium text-gray-700 hidden sm:block">Xin chào, Admin!</span>
