@@ -4,14 +4,12 @@
  */
 package com.healthlife.controller;
 
-import com.healthlife.dao.interfaces.ISanPhamService;
-import com.healthlife.service.DanhMucService;
-import com.healthlife.service.IDanhMucService;
-
-import com.healthlife.service.SanPhamService;
-
 import com.healthlife.model.DanhMuc;
 import com.healthlife.model.SanPham;
+import com.healthlife.service.DanhMucService;
+import com.healthlife.service.IDanhMucService;
+import com.healthlife.service.ISanPhamService;
+import com.healthlife.service.SanPhamService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -25,8 +23,8 @@ import java.util.List;
  *
  * @author Nguyen Viet Truong
  */
-@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "IndexServlet", urlPatterns = {"/index"})
+public class IndexServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,41 +35,44 @@ public class HomeServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    // 1. Khởi tạo
-    //Controller phụ thuộc vào I
     IDanhMucService danhMucService;
     ISanPhamService sanPhamService;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
         danhMucService = new DanhMucService();
         sanPhamService = new SanPhamService();
     }
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        try {
+            // --- THAY ĐỔI DUY NHẤT Ở ĐÂY ---
+            // List<DanhMuc> listC = danhMucService.getAllCategories(); (CŨ)
+            List<DanhMuc> listC = danhMucService.getAllCategories(); // (MỚI)
+            // -------------------------------
+            
+            // ... (code tải sản phẩm nổi bật giữ nguyên)
+            List<SanPham> allProducts = sanPhamService.getAllProducts();
+            List<SanPham> featuredProducts = allProducts.subList(0, Math.min(allProducts.size(), 8));
 
-        //1. Controller gọi Service lấy dữ liệu
-        List<DanhMuc> listCategories = danhMucService.getAllCategories();
-        List<SanPham> listProducts = sanPhamService.getAllProducts();
-        
-        //2. Đặt dữ liệu lên request
-        request.setAttribute("listC", listCategories);
-        request.setAttribute("listP", listProducts);
-        
-        //3. Ddieeeeeeu hướng sang home.jsp
-        request.getRequestDispatcher("home.jsp").forward(request, response);
-        
+            request.setAttribute("listC", listC); // listC bây giờ là danh sách CHA
+            request.setAttribute("listP_featured", featuredProducts);
+
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeServlet</title>");
+            out.println("<title>Servlet IndexServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet IndexServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

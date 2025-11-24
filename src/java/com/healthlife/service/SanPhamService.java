@@ -2,7 +2,6 @@ package com.healthlife.service;
 
 import com.healthlife.dao.SanPhamDAO;
 import com.healthlife.dao.interfaces.ISanPhamDAO;
-import com.healthlife.dao.interfaces.ISanPhamService;
 import com.healthlife.model.SanPham;
 import java.util.List;
 

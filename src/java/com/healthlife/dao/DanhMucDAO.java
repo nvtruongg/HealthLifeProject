@@ -7,7 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * Triển khai (implements) từ IDanhMucDAO.
@@ -22,20 +24,35 @@ public class DanhMucDAO implements IDanhMucDAO {
     @Override
     public List<DanhMuc> getAllCategories() {
         List<DanhMuc> list = new ArrayList<>();
-        String query = "SELECT * FROM danh_muc";
+        Map<Integer, DanhMuc> map = new HashMap<>();
+        String query = "SELECT * FROM danh_muc ORDER BY id_danh_muc_cha ASC, ten_danh_muc DESC";
+
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
-                // Sử dụng model 'DanhMuc' của bạn
-                list.add(new DanhMuc(
-                        rs.getInt("id"),
-                        rs.getString("ten_danh_muc"),
-                        rs.getObject("id_danh_muc_cha", Integer.class), // Lấy ID cha (có thể null)
-                        rs.getString("hinh_anh"),
-                        rs.getString("mo_ta")
-                ));
+                DanhMuc dm = new DanhMuc();
+                dm.setId(rs.getInt("id"));
+                dm.setTenDanhMuc(rs.getString("ten_danh_muc"));
+                dm.setIdDanhMucCha(rs.getInt("id_danh_muc_cha"));
+                dm.setHinhAnh(rs.getString("hinh_anh"));
+                dm.setMoTa(rs.getString("mo_ta"));
+                dm.setDanhMucCon(new ArrayList<>());
+                list.add(dm);
+                map.put(dm.getId(), dm);
+            }
+            
+            List<DanhMuc> dmP = new ArrayList<>();
+            for(DanhMuc dm : list){
+                if(dm.getIdDanhMucCha() == null){
+                    dmP.add(dm);
+                }else{
+                    DanhMuc parent = map.get(dm.getIdDanhMucCha());
+                    if(parent != null){
+                        parent.getDanhMucCon().add(dm);
+                    }
+                }
             }
         } catch (Exception e) {
             System.out.println("Lỗi khi lấy danh sách danh mục: " + e.getMessage());

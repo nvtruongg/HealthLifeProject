@@ -4,13 +4,6 @@
  */
 package com.healthlife.controller;
 
-import com.healthlife.service.ISanPhamService;
-import com.healthlife.model.DanhMuc;
-import com.healthlife.model.SanPham;
-import com.healthlife.service.DanhMucService;
-import com.healthlife.service.IDanhMucService;
-
-import com.healthlife.service.SanPhamService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,14 +11,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
  * @author Nguyen Viet Truong
  */
-@WebServlet(name = "ShopServlet", urlPatterns = {"/shop"})
-public class ShopServlet extends HttpServlet {
+@WebServlet(name = "CartViewServlet", urlPatterns = {"/cart-view"})
+public class CartViewServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,69 +28,23 @@ public class ShopServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    IDanhMucService danhMucService;
-    ISanPhamService sanPhamService;
-    
-    @Override
-    public void init(){
-        danhMucService = new DanhMucService();
-        sanPhamService = new SanPhamService();
-    }
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        // 1. Lấy `cid` (category id) từ URL
-        String categoryId = request.getParameter("cid");
-
-        // 2. Tải danh sách Danh Mục (cho Navbar)
-        List<DanhMuc> listCategories = danhMucService.getAllCategories();
-        request.setAttribute("listC", listCategories); // Dùng cho Navbar
-        
-        // 3. Tải danh sách Sản Phẩm (Logic gộp)
-        List<SanPham> listProducts;
-        String pageTitle;
-        if (categoryId != null && !categoryId.isEmpty()) {
-            pageTitle = "Danh Mục";
-            // Nếu CÓ cid -> Lọc theo danh mục
-            listProducts = sanPhamService.getProductsByCategoryID(categoryId);
-            // Đặt cid đang active để JSP tô màu menu
-            for(DanhMuc parent : listCategories){
-                if(parent.getId() == Integer.parseInt(categoryId)){
-                    pageTitle = parent.getTenDanhMuc();
-                    break;
-                }
-                for(DanhMuc child : parent.getDanhMucCon()){
-                    if(child.getId() == Integer.parseInt(categoryId)){
-                        pageTitle = child.getTenDanhMuc();
-                        break;
-                    }
-                }
-            }
-            request.setAttribute("activeCid", categoryId); 
-        } else {
-            // Nếu KHÔNG có cid -> Lấy tất cả sản phẩm
-            listProducts = sanPhamService.getAllProducts();
-            pageTitle = "Tất cả sản phẩm";
-            
+        Object obj = request.getSession().getAttribute("cart");
+        if (obj == null || !(obj instanceof com.healthlife.model.Cart)) {
+            request.getSession().setAttribute("cart", new com.healthlife.model.Cart());
         }
-
-        request.setAttribute("listP", listProducts); // Danh sách sản phẩm đã lọc 
-        request.setAttribute("pageTile", pageTitle);
-
-        // 5. Forward sang shop.jsp
-        request.getRequestDispatcher("shop.jsp").forward(request, response);
-        
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ShopServlet</title>");
+            out.println("<title>Servlet CartViewServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ShopServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CartViewServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

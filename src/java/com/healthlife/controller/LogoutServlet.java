@@ -29,7 +29,7 @@ public class LogoutServlet extends HttpServlet {
         }
         
         // 3. Chuyển hướng người dùng về trang đăng nhập (Servlet /login)
-        response.sendRedirect("home");
+        response.sendRedirect("shop");
     }
 
     @Override

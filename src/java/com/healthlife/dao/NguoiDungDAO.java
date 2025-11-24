@@ -91,11 +91,11 @@ public class NguoiDungDAO implements INguoiDungDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToUser(rs);
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 

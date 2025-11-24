@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect("admin");
                 
             } else {
-                response.sendRedirect("home"); // Chuyển đến trang chủ
+                response.sendRedirect("shop");
             }
         } else {
             request.setAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");
