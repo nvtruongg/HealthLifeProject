@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Đây là một Servlet Filter (Bộ lọc) hoạt động như một "người gác cổng".
- * Nó sẽ chặn MỌI yêu cầu ("/*") và kiểm tra.
+ * Đây là một Servlet Filter (Bộ lọc) hoạt động như một "người gác cổng". Nó sẽ
+ * chặn MỌI yêu cầu ("/*") và kiểm tra.
  */
 @WebFilter("/*") // Chặn tất cả mọi yêu cầu
 public class AdminAuthFilter implements Filter {
@@ -33,39 +33,41 @@ public class AdminAuthFilter implements Filter {
         // === 1. KIỂM TRA CÁC TRANG CÔNG KHAI (PUBLIC) ===
         // Nếu người dùng đang cố truy cập trang login, logout, hoặc các tài nguyên
         // (CSS, JS - nếu bạn có), hãy cho họ đi qua.
-        if (path.equals("/login") || path.equals("/logout") ||path.equals("/home")|| path.equals("/login.jsp") || path.equals("/home.jsp")
-                /* Thêm các thư mục tài nguyên nếu cần, ví dụ: || path.startsWith("/css/") */) {
-            
+        if (path.equals("/") || path.equals("/index") || path.equals("/index.jsp")
+                || path.equals("/login") || path.equals("/logout") || path.equals("/shop")
+                || path.equals("/login.jsp") || path.equals("/shop.jsp")
+                || path.startsWith("/Images/")
+                || path.startsWith("/assets/")) {
+
             chain.doFilter(request, response); // Cho phép đi tiếp
             return; // Dừng bộ lọc ở đây
         }
 
         // === 2. KIỂM TRA CÁC TRANG CẦN BẢO VỆ (ADMIN) ===
-        
         // Lấy session hiện tại (không tạo mới nếu chưa có)
-        HttpSession session = req.getSession(false); 
+        HttpSession session = req.getSession(false);
 
-        // Kiểm tra xem người dùng đã đăng nhập chưa (session có tồn tại VÀ có "account" không)
-        boolean isLoggedIn = (session != null && session.getAttribute("account") != null);
+        // Kiểm tra xem người dùng đã đăng nhập chưa (session có tồn tại VÀ có "user" không)
+        boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
 
         if (isLoggedIn) {
             // NẾU ĐÃ ĐĂNG NHẬP:
-            
+
             // --- GIẢI QUYẾT VẤN ĐỀ CACHE (NÚT BACK) ---
             // Ra lệnh cho trình duyệt không được lưu cache các trang này
             res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
             res.setHeader("Pragma", "no-cache"); // HTTP 1.0
             res.setDateHeader("Expires", 0); // Proxies
-            
+
             // Cho phép người dùng đi tiếp vào trang admin họ muốn
             chain.doFilter(request, response);
-            
+
         } else {
             // NẾU CHƯA ĐĂNG NHẬP:
-            
+
             // Đẩy họ về trang đăng nhập
             System.out.println("FILTER: Đã chặn truy cập trái phép vào: " + path);
-            res.sendRedirect(req.getContextPath() + "/home");
+            res.sendRedirect(req.getContextPath() + "/shop");
         }
     }
 

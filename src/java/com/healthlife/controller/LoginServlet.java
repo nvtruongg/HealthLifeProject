@@ -36,8 +36,8 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             
             // --- SỬA LỖI 1: Đổi "user" thành "account" ---
-            // Tên "account" này phải khớp với tên ${sessionScope.account} trong các tệp JSP
-            session.setAttribute("account", user); 
+            // Tên "user" này phải khớp với tên ${sessionScope.user} trong các tệp JSP
+            session.setAttribute("user", user); 
 
             // Phân quyền: role = "admin" hoặc "khach_hang"
             if ("admin".equals(user.getRole())) {
