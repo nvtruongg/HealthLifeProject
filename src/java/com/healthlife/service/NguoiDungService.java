@@ -4,6 +4,7 @@ import com.healthlife.dao.interfaces.INguoiDungDAO;
 import com.healthlife.dao.NguoiDungDAO;
 import com.healthlife.model.NguoiDung;
 import com.healthlife.service.INguoiDungService;
+import java.util.List;
 
 public class NguoiDungService implements INguoiDungService {
     
@@ -29,5 +30,34 @@ public class NguoiDungService implements INguoiDungService {
     @Override
     public NguoiDung loginUser(String email, String password) {
         return ((NguoiDungDAO) nguoiDungDAO).checkLogin(email, password); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean addUser(NguoiDung user) {
+          // Kiểm tra email trùng lặp trước khi thêm
+        if (nguoiDungDAO.checkUsernameExists(user.getEmail())) {
+            return false; 
+        }
+        return nguoiDungDAO.addUser(user);
+    }
+
+    @Override
+    public boolean updateUser(NguoiDung user) {
+        return nguoiDungDAO.updateUser(user);
+    }
+
+    @Override
+    public boolean deleteUser(int id) {
+        return nguoiDungDAO.deleteUser(id);
+    }
+
+    @Override
+    public List<NguoiDung> getAllUsers() {
+        return nguoiDungDAO.getAllUsers();
+    }
+
+    @Override
+    public NguoiDung getUserById(int id) {
+        return nguoiDungDAO.getUserById(id);
     }
 }

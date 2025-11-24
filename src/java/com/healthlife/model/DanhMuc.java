@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.healthlife.model;
 
 import java.util.List;
@@ -9,24 +5,38 @@ import java.util.List;
 /**
  *
  * @author Nguyen Viet Truong
+ * Cập nhật để sử dụng Integer cho idDanhMucCha (hỗ trợ NULL)
  */
 public class DanhMuc {
     private int id;
     private String tenDanhMuc;
-    private Integer idDanhMucCha;
+    private Integer idDanhMucCha; // SỬ DỤNG INTEGER ĐỂ HỖ TRỢ NULL TỪ CSDL
     private String hinhAnh;
     private String moTa;
-    private List<DanhMuc> danhMucCon;
     
+    // Trường cho danh mục con (như bạn đã thêm)
+    private List<DanhMuc> danhMucCon;
+
     public DanhMuc() {
     }
 
-    public DanhMuc(int id, String tenDanhMuc, int idDanhMucCha, String hinhAnh, String moTa) {
+    // Constructor đã cập nhật để chấp nhận Integer
+    public DanhMuc(int id, String tenDanhMuc, Integer idDanhMucCha, String hinhAnh, String moTa) {
         this.id = id;
         this.tenDanhMuc = tenDanhMuc;
         this.idDanhMucCha = idDanhMucCha;
         this.hinhAnh = hinhAnh;
         this.moTa = moTa;
+    }
+
+    // --- Getters and Setters ---
+    
+    public List<DanhMuc> getDanhMucCon() {
+        return danhMucCon;
+    }
+
+    public void setDanhMucCon(List<DanhMuc> danhMucCon) {
+        this.danhMucCon = danhMucCon;
     }
 
     public int getId() {
@@ -45,11 +55,12 @@ public class DanhMuc {
         this.tenDanhMuc = tenDanhMuc;
     }
 
+    // Getter/Setter đã cập nhật cho Integer
     public Integer getIdDanhMucCha() {
         return idDanhMucCha;
     }
 
-    public void setIdDanhMucCha(int idDanhMucCha) {
+    public void setIdDanhMucCha(Integer idDanhMucCha) {
         this.idDanhMucCha = idDanhMucCha;
     }
 
@@ -67,13 +78,5 @@ public class DanhMuc {
 
     public void setMoTa(String moTa) {
         this.moTa = moTa;
-    }
-    
-    public List<DanhMuc> getDanhMucCon() {
-        return danhMucCon;
-    }
-
-    public void setDanhMucCon(List<DanhMuc> danhMucCon) {
-        this.danhMucCon = danhMucCon;
     }
 }

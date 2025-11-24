@@ -14,4 +14,7 @@ public interface ISanPhamDAO {
     List<SanPham> getProductsByCategoryID(String categoryId);
     SanPham getProductById(int id);
     List<SanPham> searchProductsByName(String keyword);  // Thêm mới cho tìm kiếm
+    boolean addProduct(SanPham sp);
+    boolean updateProduct(SanPham sp);
+    boolean deleteProduct(int id);
 }

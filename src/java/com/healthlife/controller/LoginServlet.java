@@ -5,11 +5,14 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
-import com.healthlife.dao.NguoiDungDAO;
+// Giả sử bạn có các import này
+import com.healthlife.dao.NguoiDungDAO; // (Tôi giả định tên DAO)
 import com.healthlife.model.NguoiDung;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    
+    // Giả sử bạn khởi tạo DAO ở đây hoặc trong init()
     private NguoiDungDAO userDAO = new NguoiDungDAO();
 
     // Khi người dùng vào trực tiếp /login thì hiển thị form
@@ -26,15 +29,23 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        // (Tôi giả định tên model NguoiDung và phương thức getRole() của bạn)
         NguoiDung user = userDAO.checkLogin(email, password);
 
         if (user != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", user);
+            
+            // --- SỬA LỖI 1: Đổi "user" thành "account" ---
+            // Tên "account" này phải khớp với tên ${sessionScope.account} trong các tệp JSP
+            session.setAttribute("account", user); 
 
             // Phân quyền: role = "admin" hoặc "khach_hang"
             if ("admin".equals(user.getRole())) {
-                response.sendRedirect("admin.jsp");
+                
+                // --- SỬA LỖI 2: Chuyển hướng đến /admin (Servlet) thay vì file JSP ---
+                // Điều này giúp URL trên trình duyệt sạch sẽ hơn (chỉ /admin)
+                response.sendRedirect("admin");
+                
             } else {
                 response.sendRedirect("shop");
             }

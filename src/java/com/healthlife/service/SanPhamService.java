@@ -28,4 +28,19 @@ public class SanPhamService implements ISanPhamService {
     public List<SanPham> searchProductsByName(String keyword) {
         return sanPhamDAO.searchProductsByName(keyword);
     }
+
+    @Override
+    public boolean addProduct(SanPham sp) {
+        return sanPhamDAO.addProduct(sp);
+    }
+
+    @Override
+    public boolean updateProduct(SanPham sp) {
+        return sanPhamDAO.updateProduct(sp);
+    }
+
+    @Override
+    public boolean deleteProduct(int id) {
+        return sanPhamDAO.deleteProduct(id);
+    }
 }

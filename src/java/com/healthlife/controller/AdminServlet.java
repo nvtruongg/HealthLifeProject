@@ -6,30 +6,22 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
- * Servlet này xử lý yêu cầu đăng xuất.
- * Nó lắng nghe tại URL "/logout" (khớp với href="logout" trong các tệp JSP).
+ * Servlet này hoạt động như một bộ điều hướng (dispatcher) cho trang admin.
+ * Nó lắng nghe trên URL "/admin" và chuyển tiếp (forward) yêu cầu
+ * đến trang "admin_home.jsp".
  */
-@WebServlet(name = "LogoutServlet", urlPatterns = {"/logout"})
-public class LogoutServlet extends HttpServlet {
+@WebServlet(name = "AdminHomeServlet", urlPatterns = {"/admin"})
+public class AdminServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         
-        // 1. Lấy session hiện tại (không tạo mới nếu không có)
-        HttpSession session = request.getSession(false);
-        
-        if (session != null) {
-            // 2. Hủy session
-            // Thao tác này sẽ xóa tất cả các attribute (như "account")
-            session.invalidate(); 
-            System.out.println("LOGOUT: Session đã được hủy.");
-        }
-        
-        // 3. Chuyển hướng người dùng về trang đăng nhập (Servlet /login)
-        response.sendRedirect("shop");
+        // Chuyển tiếp yêu cầu đến trang JSP
+        // Người dùng thấy /admin trên URL, nhưng nội dung là của admin_home.jsp
+        request.getRequestDispatcher("/admin_home.jsp").forward(request, response);
     }
 
     @Override
@@ -46,6 +38,6 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Servlet xử lý đăng xuất người dùng";
+        return "Servlet điều hướng trang chủ admin";
     }
 }
