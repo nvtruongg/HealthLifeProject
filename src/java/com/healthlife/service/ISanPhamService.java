@@ -11,4 +11,5 @@ public interface ISanPhamService {
      boolean addProduct(SanPham sp);
     boolean updateProduct(SanPham sp);
     boolean deleteProduct(int id);
+    List<SanPham> filterProducts(String categoryId, String brandId, String priceRange, String sortType);
 }

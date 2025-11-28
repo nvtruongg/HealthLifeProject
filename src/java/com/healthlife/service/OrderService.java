@@ -10,6 +10,7 @@ import com.healthlife.model.Cart;
 import com.healthlife.model.CartItem;
 import com.healthlife.model.DonHang;
 import com.healthlife.model.SanPham;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,5 +58,9 @@ public class OrderService implements IOrderService{
 
         // 4. Mọi thứ OK, gọi DAO để lưu (chỉ lưu các SP đã chọn)
         return orderDAO.saveOrder(donHang, selectedItems);
+    }
+    @Override
+    public List<DonHang> getOrdersByUserId(int userId) {
+        return orderDAO.getOrdersByUserId(userId);
     }
 }

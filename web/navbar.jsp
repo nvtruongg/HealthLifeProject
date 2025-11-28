@@ -45,9 +45,6 @@
                     </c:if>
 
                 </c:forEach>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="contact.jsp">Liên hệ</a>
-                </li>
             </ul>
 
         </div>

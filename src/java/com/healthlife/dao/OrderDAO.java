@@ -9,6 +9,8 @@ import com.healthlife.db.DBContext;
 import com.healthlife.model.CartItem;
 import com.healthlife.model.DonHang;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,5 +118,41 @@ public class OrderDAO implements IOrderDAO {
             if (psUpdateStock != null) psUpdateStock.close();
             if (conn != null) conn.close();
         }
+    }
+    
+    @Override
+    public List<DonHang> getOrdersByUserId(int userId) {
+        List<DonHang> list = new ArrayList<>();
+        // Sắp xếp đơn mới nhất lên đầu
+        String sql = "SELECT * FROM don_hang WHERE id_nguoi_dung = ? ORDER BY ngay_dat DESC";
+        
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                DonHang dh = new DonHang();
+                dh.setId(rs.getInt("id"));
+                dh.setMaDonHang(rs.getString("ma_don_hang"));
+                dh.setNgayDat(rs.getTimestamp("ngay_dat")); // Cần thêm thuộc tính này vào Model DonHang nếu chưa có
+                dh.setTongThanhToan(rs.getBigDecimal("tong_thanh_toan"));
+                dh.setTrangThaiDonHang(rs.getString("trang_thai_don_hang"));
+                dh.setDiaChiGiaoHang(rs.getString("dia_chi_giao_hang"));
+                // Các trường khác nếu cần...
+                
+                list.add(dh);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public DonHang getOrderById(int orderId) {
+        // (Bạn có thể triển khai tương tự nếu cần xem chi tiết 1 đơn hàng cụ thể)
+        return null; 
     }
 }

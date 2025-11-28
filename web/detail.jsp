@@ -7,6 +7,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="header.jsp" %> <!-- Include header -->
+<%@ include file="navbar.jsp" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -84,13 +85,27 @@
                 height: 3px;
                 background: linear-gradient(to right, #28a745, #007bff);
             }
-            .review-star { color: #ffc107; font-size: 1.2rem; }
-            .quantity-input { max-width: 100px; }
+            .review-star {
+                color: #ffc107;
+                font-size: 1.2rem;
+            }
+            .quantity-input {
+                max-width: 100px;
+            }
             @media (max-width: 768px) {
-                .product-card { margin-bottom: 20px; }
-                .col-md-5, .col-md-7 { flex: 0 0 100%; max-width: 100%; }
-                .price-sale { font-size: 1.5rem; }
-                .section-heading { font-size: 1.4rem; }
+                .product-card {
+                    margin-bottom: 20px;
+                }
+                .col-md-5, .col-md-7 {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                }
+                .price-sale {
+                    font-size: 1.5rem;
+                }
+                .section-heading {
+                    font-size: 1.4rem;
+                }
             }
         </style>
     </head>
@@ -99,7 +114,7 @@
             <c:if test="${not empty product}">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-light p-2 rounded">
-                        <li class="breadcrumb-item"><a href="home" class="text-primary">Trang Chủ</a></li>
+                        <li class="breadcrumb-item"><a href="shop" class="text-primary">Trang Chủ</a></li>
                         <li class="breadcrumb-item"><a href="shop?cid=${product.idDanhMuc}" class="text-primary">Danh Mục Sản Phẩm</a></li>
                         <li class="breadcrumb-item active" aria-current="page">${product.tenSanPham}</li>
                     </ol>
@@ -125,7 +140,10 @@
                                 <div class="d-flex align-items-center mb-3">
                                     <label for="quantity" class="me-2">Số lượng:</label>
                                     <input type="number" id="quantity" value="1" min="1" max="${product.soLuongTon}" class="form-control quantity-input me-2">
-                                    <a href="#" class="btn add-to-cart">Thêm vào giỏ</a>
+                                    <button type="button" class="btn btn-primary mt-2 btn-add-to-cart"
+                                            data-product-id="${p.id}">
+                                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                                    </button>
                                 </div>
                                 <p class="card-text text-muted">Sản phẩm đang được chú ý, có <strong>X</strong> người thêm vào giỏ & <strong>Y</strong> người đang xem.</p>
                                 <p class="card-text">${product.moTaNgan}</p>
@@ -195,11 +213,10 @@
                 </div>
             </c:if>
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        
         <script>
             document.querySelectorAll('.product-thumbs img').forEach(thumb => {
-                thumb.addEventListener('click', function() {
+                thumb.addEventListener('click', function () {
                     document.querySelector('.product-img-main').src = this.src;
                     document.querySelectorAll('.product-thumbs img').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');

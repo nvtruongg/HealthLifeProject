@@ -46,43 +46,12 @@ public class SanPhamDAO implements ISanPhamDAO{
     //Lấy tất cả sản phẩm đang kinh doanh - Giữ nguyên
     @Override
     public List<SanPham> getAllProducts() {
-        List<SanPham> list = new ArrayList<>();
-        String query = "SELECT * FROM san_pham WHERE trang_thai = 'dang_kinh_doanh'";
-       
-        try {
-            connection = DBContext.getConnection();
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(mapResultSetToSanPham(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeConnections();
-        }
-        return list;
+        return filterProducts(null, null, null, null);
     }
     //Lấy sản phẩm theo ID Danh Mục - Giữ nguyên
     @Override
     public List<SanPham> getProductsByCategoryID(String categoryId) {
-        List<SanPham> list = new ArrayList<>();
-        String query = "SELECT * FROM san_pham WHERE id_danh_muc = ? AND trang_thai = 'dang_kinh_doanh'";
-       
-        try {
-            connection = DBContext.getConnection();
-            ps = connection.prepareStatement(query);
-            ps.setString(1, categoryId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(mapResultSetToSanPham(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeConnections();
-        }
-        return list;
+        return filterProducts(categoryId, null, null, null);
     }
     // Lấy sản phẩm theo ID - Giữ nguyên
     @Override
@@ -212,5 +181,77 @@ public class SanPhamDAO implements ISanPhamDAO{
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public List<SanPham> filterProducts(String categoryId, String brandId, String priceRange, String sortType) {
+        List<SanPham> list = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+        
+        // 1. Câu truy vấn cơ bản
+        StringBuilder sql = new StringBuilder("SELECT p.* FROM san_pham p ");
+        sql.append("LEFT JOIN danh_muc d ON p.id_danh_muc = d.id ");
+        sql.append("WHERE p.trang_thai = 'dang_kinh_doanh' ");
+
+        // 2. Điều kiện Danh mục (Cha hoặc Con)
+        if (categoryId != null && !categoryId.isEmpty()) {
+            sql.append("AND (d.id = ? OR d.id_danh_muc_cha = ?) ");
+            params.add(categoryId);
+            params.add(categoryId);
+        }
+
+        // 3. Điều kiện Thương hiệu
+        if (brandId != null && !brandId.isEmpty()) {
+            sql.append("AND p.id_thuong_hieu = ? ");
+            params.add(brandId);
+        }
+
+        // 4. Điều kiện Giá
+        if (priceRange != null && !priceRange.isEmpty()) {
+            if (priceRange.equals("500000-max")) {
+                sql.append("AND p.gia_ban >= 500000 ");
+            } else if (priceRange.contains("-")) {
+                String[] parts = priceRange.split("-");
+                if (parts.length == 2) {
+                    sql.append("AND p.gia_ban BETWEEN ? AND ? ");
+                    params.add(parts[0]);
+                    params.add(parts[1]);
+                }
+            }
+        }
+
+        // 5. Sắp xếp
+        if (sortType != null) {
+            switch (sortType) {
+                case "asc": sql.append("ORDER BY p.gia_ban ASC "); break;
+                case "desc": sql.append("ORDER BY p.gia_ban DESC "); break;
+                default: sql.append("ORDER BY p.id DESC "); break; // Mặc định mới nhất
+            }
+        } else {
+            sql.append("ORDER BY p.id DESC ");
+        }
+
+        // --- IN LOG ĐỂ KIỂM TRA ---
+        System.out.println("DEBUG SQL: " + sql.toString());
+        System.out.println("DEBUG PARAMS: " + params);
+        // --------------------------
+        // 6. Thực thi truy vấn
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            // Gán tham số động
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapResultSetToSanPham(rs));
+            }
+        } catch (Exception e) {
+            System.out.println("LỖI SQL FILTER: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
     }
 }
