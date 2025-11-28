@@ -366,7 +366,7 @@
                             <div class="col-6 col-md-4 col-lg-3 product-item">
                                 <div class="product-card h-100">
                                     <a href="detail?pid=${p.id}" class="card-img-wrapper">
-                                        <img src="${p.hinhAnhDaiDien}" class="card-img-top" alt="${p.tenSanPham}">
+                                        <img src="Images/${p.id}.jpg" class="card-img-top" onerror="this.src='${p.hinhAnhDaiDien}'">
                                     </a>
                                     <div class="card-body">
                                         <h5 class="card-title">
