@@ -150,7 +150,7 @@
                 
                 <!-- Default categories if no data -->
                 <c:if test="${empty categories}">
-                    <a href="${pageContext.request.contextPath}/products?category=1" class="category-card">
+                    <a href="${pageContext.request.contextPath}/shop?cid=1" class="category-card">
                         <div class="category-icon">
                             <i class="fas fa-pills"></i>
                         </div>
@@ -159,7 +159,7 @@
                         <span class="category-link">Xem thêm <i class="fas fa-arrow-right"></i></span>
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/products?category=2" class="category-card">
+                    <a href="${pageContext.request.contextPath}/shop?cid=2" class="category-card">
                         <div class="category-icon">
                             <i class="fas fa-heartbeat"></i>
                         </div>
@@ -168,7 +168,7 @@
                         <span class="category-link">Xem thêm <i class="fas fa-arrow-right"></i></span>
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/products?category=3" class="category-card">
+                    <a href="${pageContext.request.contextPath}/shop?cid=3" class="category-card">
                         <div class="category-icon">
                             <i class="fas fa-shield-virus"></i>
                         </div>
@@ -177,7 +177,7 @@
                         <span class="category-link">Xem thêm <i class="fas fa-arrow-right"></i></span>
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/products?category=4" class="category-card">
+                    <a href="${pageContext.request.contextPath}/shop?cid=4" class="category-card">
                         <div class="category-icon">
                             <i class="fas fa-spa"></i>
                         </div>
@@ -186,7 +186,7 @@
                         <span class="category-link">Xem thêm <i class="fas fa-arrow-right"></i></span>
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/products?category=5" class="category-card">
+                    <a href="${pageContext.request.contextPath}/shop?cid=5" class="category-card">
                         <div class="category-icon">
                             <i class="fas fa-brain"></i>
                         </div>
@@ -195,7 +195,7 @@
                         <span class="category-link">Xem thêm <i class="fas fa-arrow-right"></i></span>
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/products?category=6" class="category-card">
+                    <a href="${pageContext.request.contextPath}/shop?cid=6" class="category-card">
                         <div class="category-icon">
                             <i class="fas fa-bone"></i>
                         </div>

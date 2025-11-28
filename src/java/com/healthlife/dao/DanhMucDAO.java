@@ -25,7 +25,7 @@ public class DanhMucDAO implements IDanhMucDAO {
     public List<DanhMuc> getAllCategories() {
         List<DanhMuc> list = new ArrayList<>();
         Map<Integer, DanhMuc> map = new HashMap<>();
-        String query = "SELECT * FROM danh_muc ORDER BY id_danh_muc_cha ASC, ten_danh_muc DESC";
+        String query = "SELECT * FROM danh_muc ORDER BY id, ten_danh_muc";
 
         try {
             conn = new DBContext().getConnection();

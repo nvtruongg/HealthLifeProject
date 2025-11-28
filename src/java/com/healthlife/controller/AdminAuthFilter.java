@@ -36,6 +36,7 @@ public class AdminAuthFilter implements Filter {
         if (path.equals("/") || path.equals("/index") || path.equals("/index.jsp")
                 || path.equals("/login") || path.equals("/logout") || path.equals("/shop")
                 || path.equals("/login.jsp") || path.equals("/shop.jsp")
+                || path.equals("/register") || path.equals("/register.jsp")
                 || path.startsWith("/Images/")
                 || path.startsWith("/assets/")) {
 

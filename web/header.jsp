@@ -11,7 +11,7 @@
     <div class="bg-primary text-white py-1 small">
         <div class="container d-flex justify-content-between">
             <div>
-                💊 Sức khỏe của bạn – Niềm vui của chúng tôi
+                Sức khỏe của bạn – Niềm vui của chúng tôi
             </div>
             <div>
                 📞 Hotline: <strong>037 999 6828</strong>
@@ -20,14 +20,14 @@
     </div>
 
     <!-- Thanh chính -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #003D9D;">
+    <nav class="navbar navbar-expand-lg" style="background-color: #1250DC;"> <!--003D9D-->
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center text-white flex-shink-0" href="index">
-                <img src="Images/logo.png" alt="HealthLife" height="45" class="me-2 bg-white rounded-circle p-1">
+                <img src="Images/logoHL.png" alt="HealthLife" height="70" class="me-2 p-0 logo-img">
                 <div>
                     <strong>HEALTHLIFE</strong><br>
-                    <small class="text-light">Nhà thuốc uy tín</small>
+                    <small class="text-light">Thương hiệu uy tín</small>
                 </div>
             </a>
 
@@ -76,7 +76,7 @@
 
                         <!-- 2. href trỏ đến CartViewServlet -->
                         <a href="cart-view" class="nav-link text-white position-relative">
-                            <i class="bi bi-cart-fill" style="font-size: 1.2rem;"></i>
+                            <i class="bi bi-cart-fill"> Giỏ hàng</i>
                             <!-- 3. Gán ID cho badge để AJAX cập nhật -->
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
                                   id="cart-count-badge">
@@ -99,13 +99,13 @@
         box-shadow: 0 0 4px rgba(255, 212, 59, 0.5);
     }
     .navbar .btn-warning {
-        background-color: #FFD43B;
+        background-color: #00c6ff;
         border: none;
         color: #000;
         transition: 0.3s;
     }
     .navbar .btn-warning:hover {
-        background-color: #ffca2c;
+        background-color: #FFD43B;
     }
     .nav-link:hover {
         color: #003D9D !important;
@@ -125,5 +125,12 @@
     }
     .badge {
         font-size: 0.65rem;
+    }
+    .logo-img {
+        height: 80px;
+        width: 80px; /* Đảm bảo ảnh là hình vuông */
+        object-fit: cover; /* Cắt ảnh vừa khít khung */
+        border-radius: 30%; /* Làm tròn */
+        background-color: transparent;
     }
 </style>
