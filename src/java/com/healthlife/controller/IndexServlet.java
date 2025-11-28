@@ -47,15 +47,12 @@ public class IndexServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            // --- THAY ĐỔI DUY NHẤT Ở ĐÂY ---
-            // List<DanhMuc> listC = danhMucService.getAllCategories(); (CŨ)
-            List<DanhMuc> listC = danhMucService.getAllCategories(); // (MỚI)
-            // -------------------------------
             
-            // ... (code tải sản phẩm nổi bật giữ nguyên)
+            List<DanhMuc> listC = danhMucService.getAllCategories(); // (MỚI)
+           
             List<SanPham> allProducts = sanPhamService.getAllProducts();
             List<SanPham> featuredProducts = allProducts.subList(0, Math.min(allProducts.size(), 8));
-
+            
             request.setAttribute("listC", listC); // listC bây giờ là danh sách CHA
             request.setAttribute("listP_featured", featuredProducts);
 

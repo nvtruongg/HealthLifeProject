@@ -17,4 +17,5 @@ public interface ISanPhamDAO {
     boolean addProduct(SanPham sp);
     boolean updateProduct(SanPham sp);
     boolean deleteProduct(int id);
+     List<SanPham> getTopSellingProducts(int limit);
 }

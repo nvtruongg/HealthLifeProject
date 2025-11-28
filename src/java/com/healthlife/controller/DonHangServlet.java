@@ -32,8 +32,14 @@ public class DonHangServlet extends HttpServlet {
             case "detail":
                 viewDetail(request, response);
                 break;
-            case "update_status":
-                updateStatus(request, response);
+            case "next_step": // Xử lý chuyển bước tiếp theo
+                nextStep(request, response);
+                break;
+            case "revert_status": // Xử lý quay lại bước trước (có lý do)
+                revertStatus(request, response);
+                break;
+            case "cancel": // Xử lý hủy đơn
+                cancelOrder(request, response);
                 break;
             default:
                 list(request, response);
@@ -44,6 +50,7 @@ public class DonHangServlet extends HttpServlet {
     private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<DonHang> list = donHangService.getAllOrders();
         request.setAttribute("orderList", list);
+        // Trỏ vào thư mục con ADMIN/QuanLyDonHang
         request.getRequestDispatcher("admin_donhang.jsp").forward(request, response);
     }
 
@@ -65,36 +72,106 @@ public class DonHangServlet extends HttpServlet {
         }
     }
 
-    private void updateStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // --- LOGIC MỚI: CHUYỂN TRẠNG THÁI TUẦN TỰ (NEXT) ---
+    private void nextStep(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             int id = Integer.parseInt(request.getParameter("id"));
-            String status = request.getParameter("status"); // Trạng thái đơn hàng
-            String paymentStatus = request.getParameter("paymentStatus"); // Trạng thái thanh toán
-
-            // --- LOGIC MỚI: Ràng buộc trạng thái ---
-            // Nếu đơn hàng là "Đã giao" (da_giao) -> Bắt buộc thanh toán là "Đã thanh toán" (da_thanh_toan)
-            if ("da_giao".equals(status)) {
-                paymentStatus = "da_thanh_toan";
-            }
-
-            boolean updated = false;
-            if (status != null && !status.isEmpty()) {
-                updated = donHangService.updateOrderStatus(id, status);
-            }
+            DonHang order = donHangService.getOrderById(id);
+            String currentStatus = order.getTrangThaiDonHang();
+            String nextStatus = "";
             
-            if (paymentStatus != null && !paymentStatus.isEmpty()) {
-                donHangService.updatePaymentStatus(id, paymentStatus);
-                updated = true;
+            // In ra console để debug (Xem trong cửa sổ Output của Netbeans)
+            System.out.println("DEBUG: Trạng thái hiện tại: " + currentStatus);
+
+            switch (currentStatus) {
+                case "cho_xac_nhan":
+                    nextStatus = "da_xac_nhan";
+                    break;
+                case "da_xac_nhan":
+                    nextStatus = "dang_giao";
+                    break;
+                case "dang_giao":
+                    // LƯU Ý: Kiểm tra kỹ giá trị này trong CSDL của bạn
+                    nextStatus = "hoan_thanh"; 
+                    
+                    // Cập nhật thanh toán
+                    boolean payUpdated = donHangService.updatePaymentStatus(id, "da_thanh_toan");
+                    if(payUpdated) {
+                        System.out.println("DEBUG: Đã cập nhật thanh toán thành công.");
+                    }
+                    break;
+                default:
+                    break;
             }
 
-            if (updated) {
-                request.getSession().setAttribute("message", "Cập nhật trạng thái thành công!");
+            if (!nextStatus.isEmpty()) {
+                // SỬA LỖI: Kiểm tra kết quả cập nhật (true/false)
+                boolean isUpdated = donHangService.updateOrderStatus(id, nextStatus);
+                
+                if (isUpdated) {
+                    request.getSession().setAttribute("message", "Đã cập nhật trạng thái đơn hàng thành: " + nextStatus);
+                } else {
+                    // Nếu vào đây, nghĩa là từ khóa nextStatus KHÔNG KHỚP với ENUM trong CSDL
+                    request.getSession().setAttribute("message", "Lỗi: Không thể cập nhật trạng thái. Vui lòng kiểm tra log server.");
+                    System.out.println("LỖI UPDATE: Có thể giá trị '" + nextStatus + "' không khớp với ENUM trong Database.");
+                }
+            }
+
+            response.sendRedirect("admin_donhang?action=detail&id=" + id);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("admin_donhang");
+        }
+    }
+
+    // --- LOGIC MỚI: QUAY LẠI BƯỚC TRƯỚC (REVERT) ---
+    private void revertStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String reason = request.getParameter("reason"); // Lý do
+            
+            DonHang order = donHangService.getOrderById(id);
+            String currentStatus = order.getTrangThaiDonHang();
+            String prevStatus = "";
+
+            // Logic quay lại
+            switch (currentStatus) {
+                case "da_xac_nhan": prevStatus = "cho_xac_nhan"; break;
+                case "dang_giao": prevStatus = "da_xac_nhan"; break;
+                case "hoan_thanh": prevStatus = "dang_giao"; break;
+            }
+
+            if (!prevStatus.isEmpty()) {
+                donHangService.updateOrderStatus(id, prevStatus);
+                // Bạn có thể lưu lý do vào DB (ví dụ cập nhật ghi chú), ở đây tôi thông báo
+                request.getSession().setAttribute("message", "Đã quay lại trạng thái trước. Lý do: " + reason);
             } else {
-                request.getSession().setAttribute("message", "Cập nhật thất bại.");
+                request.getSession().setAttribute("message", "Không thể quay lại từ trạng thái này.");
             }
             
             response.sendRedirect("admin_donhang?action=detail&id=" + id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("admin_donhang");
+        }
+    }
+
+    // --- LOGIC MỚI: HỦY ĐƠN HÀNG ---
+    private void cancelOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            DonHang order = donHangService.getOrderById(id);
             
+            // Chỉ cho phép hủy nếu chưa giao hàng
+            if (!"dang_giao".equals(order.getTrangThaiDonHang()) && !"da_giao".equals(order.getTrangThaiDonHang())) {
+                donHangService.updateOrderStatus(id, "da_huy");
+                request.getSession().setAttribute("message", "Đã hủy đơn hàng thành công.");
+            } else {
+                request.getSession().setAttribute("message", "Không thể hủy đơn hàng đang giao hoặc đã giao.");
+            }
+            
+            response.sendRedirect("admin_donhang?action=detail&id=" + id);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("admin_donhang");

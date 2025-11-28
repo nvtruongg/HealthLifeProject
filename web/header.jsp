@@ -20,14 +20,14 @@
     </div>
 
     <!-- Thanh chính -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #003D9D;">
+    <nav class="navbar navbar-expand-lg" style="background-color: #1250DC;"> <!--003D9D-->
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center text-white flex-shink-0" href="index">
-                <img src="Images/logo.png" alt="HealthLife" height="45" class="me-2 bg-white rounded-circle p-1">
+                <img src="Images/logoHL.png" alt="HealthLife" height="70" class="me-2 p-0 logo-img">
                 <div>
                     <strong>HEALTHLIFE</strong><br>
-                    <small class="text-light">Nhà thuốc uy tín</small>
+                    <small class="text-light">Thương hiệu uy tín</small>
                 </div>
             </a>
 
@@ -45,7 +45,8 @@
 
                 <!-- Biểu tượng tài khoản và giỏ hàng -->
                 <ul class="navbar-nav align-items-center flex-row justify-content-end gap-3">
-                    <!-- Logic Tài khoản (Tự động kiểm tra session "account") -->
+                    
+                    <!-- Logic Tài khoản (Tự động kiểm tra session "user") -->
                     <c:if test="${empty sessionScope.user}">
                         <li class="nav-item me-3">
                             <a href="login.jsp" class="nav-link text-white d-flex align-items-center fw-500 text-dark">
@@ -53,13 +54,26 @@
                             </a>
                         </li>
                     </c:if>
+                    
                     <c:if test="${not empty sessionScope.user}">
+                        
+                        <!-- --- PHẦN THÊM MỚI: NÚT ADMIN --- -->
+                        <!-- Chỉ hiện nếu role là 'admin' -->
+                        <c:if test="${sessionScope.user.role == 'admin'}">
+                            <li class="nav-item me-2">
+                                <a href="${pageContext.request.contextPath}/admin" class="btn btn-warning btn-sm d-flex align-items-center fw-bold text-dark shadow-sm" style="border-radius: 20px;">
+                                    <i class="bi bi-shield-lock-fill me-1"></i> Quản trị
+                                </a>
+                            </li>
+                        </c:if>
+                        <!-- --- KẾT THÚC PHẦN THÊM MỚI --- -->
+
                         <li class="nav-item dropdown me-3" style="z-index: 2000;">
                             <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-500" href="#" id="navbarDropdownAccount" role="button" 
                                accesskey=""data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap;">
                                 <i class="bi bi-person-circle me-2 fs-5" style="font-size: 1.2rem;"></i> 
                                 <span class="d-inline-block text-truncate" style="max-width: 150px;">
-                                    Chào,${sessionScope.user.fullname}
+                                    Chào, ${sessionScope.user.fullname}
                                 </span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
@@ -70,13 +84,14 @@
                             </ul>
                         </li>
                     </c:if>
+                    
                     <li class="nav-item me-3">
                         <!-- 1. Tính toán số lượng -->
                         <c:set var="cartItemCount" value="${empty sessionScope.cart ? 0 : sessionScope.cart.tongSoLuongTatCaItems}" />
 
                         <!-- 2. href trỏ đến CartViewServlet -->
                         <a href="cart-view" class="nav-link text-white position-relative">
-                            <i class="bi bi-cart-fill" style="font-size: 1.2rem;"></i>
+                            <i class="bi bi-cart-fill"> Giỏ hàng</i>
                             <!-- 3. Gán ID cho badge để AJAX cập nhật -->
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
                                   id="cart-count-badge">
@@ -99,14 +114,25 @@
         box-shadow: 0 0 4px rgba(255, 212, 59, 0.5);
     }
     .navbar .btn-warning {
-        background-color: #FFD43B;
+        background-color: #00c6ff;
         border: none;
         color: #000;
         transition: 0.3s;
     }
     .navbar .btn-warning:hover {
-        background-color: #ffca2c;
+        background-color: #FFD43B;
     }
+    /* Style riêng cho nút Quản trị để nó khác biệt */
+    a.btn-warning.btn-sm {
+        background-color: #FFD43B !important; /* Màu vàng cam */
+        color: #000 !important;
+        border: 1px solid #e0a800;
+    }
+    a.btn-warning.btn-sm:hover {
+        background-color: #e0a800 !important;
+        color: #fff !important;
+    }
+
     .nav-link:hover {
         color: #003D9D !important;
         background-color: #FFD43B !important;
@@ -125,5 +151,12 @@
     }
     .badge {
         font-size: 0.65rem;
+    }
+    .logo-img {
+        height: 80px;
+        width: 80px; /* Đảm bảo ảnh là hình vuông */
+        object-fit: cover; /* Cắt ảnh vừa khít khung */
+        border-radius: 30%; /* Làm tròn */
+        background-color: transparent;
     }
 </style>

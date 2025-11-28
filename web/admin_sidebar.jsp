@@ -25,6 +25,14 @@
                     Bảng điều khiển
                 </a>
             </li>
+            
+            <!-- NÚT MỚI: QUAY VỀ TRANG BÁN HÀNG -->
+            <li>
+                <a href="${pageContext.request.contextPath}/index" class="sidebar-link flex items-center px-4 py-3 rounded-lg text-lg font-medium transition-colors text-blue-600 hover:bg-blue-50">
+                    <i class="fas fa-store w-6 text-center mr-3"></i>
+                    Về trang bán hàng
+                </a>
+            </li>
             <li class="pt-4">
                 <span class="px-4 text-sm font-semibold text-gray-400 uppercase">Quản lý</span>
             </li>

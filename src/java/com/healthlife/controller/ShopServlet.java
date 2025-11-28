@@ -85,7 +85,7 @@ public class ShopServlet extends HttpServlet {
         }
 
         request.setAttribute("listP", listProducts); // Danh sách sản phẩm đã lọc 
-        request.setAttribute("pageTile", pageTitle);
+        request.setAttribute("pageTitle", pageTitle);
 
         // 5. Forward sang shop.jsp
         request.getRequestDispatcher("shop.jsp").forward(request, response);

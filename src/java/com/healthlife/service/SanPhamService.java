@@ -7,6 +7,7 @@ import java.util.List;
 
 public class SanPhamService implements ISanPhamService {
     private ISanPhamDAO sanPhamDAO = new SanPhamDAO();
+    private int limit;
 
     @Override
     public List<SanPham> getAllProducts() {
@@ -42,5 +43,10 @@ public class SanPhamService implements ISanPhamService {
     @Override
     public boolean deleteProduct(int id) {
         return sanPhamDAO.deleteProduct(id);
+    }
+
+    @Override
+    public List<SanPham> getTopSellingProducts(int i) {
+        return sanPhamDAO.getTopSellingProducts(limit);
     }
 }

@@ -11,4 +11,6 @@ public interface ISanPhamService {
      boolean addProduct(SanPham sp);
     boolean updateProduct(SanPham sp);
     boolean deleteProduct(int id);
+
+    public List<SanPham> getTopSellingProducts(int i);
 }

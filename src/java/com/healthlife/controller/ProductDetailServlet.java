@@ -29,13 +29,13 @@ public class ProductDetailServlet extends HttpServlet {
         try {
             productId = Integer.parseInt(request.getParameter("pid"));
         } catch (NumberFormatException e) {
-            response.sendRedirect("home");
+            response.sendRedirect("shop");
             return;
         }
 
         SanPham product = sanPhamService.getProductById(productId);
         if (product == null) {
-            response.sendRedirect("home");
+            response.sendRedirect("shop");
             return;
         }
 

@@ -43,6 +43,8 @@ public class SanPhamDAO implements ISanPhamDAO{
         sp.setNgayCapNhat(rs.getTimestamp("ngay_cap_nhat"));
         return sp;
     }
+    
+    
     //Lấy tất cả sản phẩm đang kinh doanh - Giữ nguyên
     @Override
     public List<SanPham> getAllProducts() {
@@ -67,12 +69,16 @@ public class SanPhamDAO implements ISanPhamDAO{
     @Override
     public List<SanPham> getProductsByCategoryID(String categoryId) {
         List<SanPham> list = new ArrayList<>();
-        String query = "SELECT * FROM san_pham WHERE id_danh_muc = ? AND trang_thai = 'dang_kinh_doanh'";
+        String query = "SELECT p.* FROM san_pham p " +
+                       "JOIN danh_muc d ON p.id_danh_muc = d.id " +
+                       "WHERE p.trang_thai = 'dang_kinh_doanh' " +
+                       "AND (d.id = ? OR d.id_danh_muc_cha = ?)";
        
         try {
             connection = DBContext.getConnection();
             ps = connection.prepareStatement(query);
             ps.setString(1, categoryId);
+            ps.setString(2, categoryId);
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(mapResultSetToSanPham(rs));
@@ -212,5 +218,38 @@ public class SanPhamDAO implements ISanPhamDAO{
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public List<SanPham> getTopSellingProducts(int limit) {
+        List<SanPham> list = new ArrayList<>();
+        // Query: Lấy thông tin sản phẩm, JOIN với chi tiết đơn hàng để tính tổng bán
+        // Chỉ tính các đơn hàng có trạng thái 'hoan_thanh'
+        String query = "SELECT sp.*, dm.ten_danh_muc, th.ten_thuong_hieu, SUM(ct.so_luong) as tong_ban " +
+                       "FROM san_pham sp " +
+                       "JOIN chi_tiet_don_hang ct ON sp.id = ct.id_san_pham " +
+                       "JOIN don_hang dh ON ct.id_don_hang = dh.id " +
+                       "LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id " +
+                       "LEFT JOIN thuong_hieu th ON sp.id_thuong_hieu = th.id " +
+                       "WHERE dh.trang_thai_don_hang = 'hoan_thanh' " + 
+                       "AND sp.trang_thai = 'dang_kinh_doanh' " +
+                       "GROUP BY sp.id " +
+                       "ORDER BY tong_ban DESC " +
+                       "LIMIT ?";
+                       
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SanPham sp = mapResultSetToSanPham(rs);
+                sp.setTenDanhMuc(rs.getString("ten_danh_muc"));
+                sp.setTenThuongHieu(rs.getString("ten_thuong_hieu"));
+                list.add(sp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

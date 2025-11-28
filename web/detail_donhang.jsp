@@ -32,15 +32,14 @@
                 </div>
 
                 <c:if test="${not empty sessionScope.message}">
-                    <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">${sessionScope.message}</div>
+                    <div class="mb-4 p-4 bg-blue-100 text-blue-700 rounded-lg">${sessionScope.message}</div>
                     <c:remove var="message" scope="session" />
                 </c:if>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    <!-- Cột Trái: Thông tin và Sản phẩm -->
+                    <!-- Cột Trái: Sản phẩm -->
                     <div class="lg:col-span-2 space-y-6">
-                        <!-- Sản phẩm trong đơn -->
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <h4 class="text-lg font-bold text-gray-800 mb-4">Sản phẩm đã đặt</h4>
                             <div class="overflow-x-auto">
@@ -57,19 +56,11 @@
                                         <c:forEach var="d" items="${orderDetails}">
                                             <tr>
                                                 <td class="py-4 text-sm">
-                                                    <div class="flex items-center">
-                                                        <div class="ml-2">
-                                                            <div class="font-medium text-gray-900">${d.tenSanPham}</div>
-                                                        </div>
-                                                    </div>
+                                                    <div class="font-medium text-gray-900">${d.tenSanPham}</div>
                                                 </td>
                                                 <td class="py-4 text-sm text-center">${d.soLuong}</td>
-                                                <td class="py-4 text-sm text-right">
-                                                    <fmt:formatNumber value="${d.giaLucMua}" type="currency" currencySymbol="₫" />
-                                                </td>
-                                                <td class="py-4 text-sm text-right font-bold">
-                                                    <fmt:formatNumber value="${d.thanhTien}" type="currency" currencySymbol="₫" />
-                                                </td>
+                                                <td class="py-4 text-sm text-right"><fmt:formatNumber value="${d.giaLucMua}" type="currency" currencySymbol="₫" /></td>
+                                                <td class="py-4 text-sm text-right font-bold"><fmt:formatNumber value="${d.thanhTien}" type="currency" currencySymbol="₫" /></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
@@ -90,108 +81,134 @@
                         </div>
                     </div>
 
-                    <!-- Cột Phải: Thông tin khách hàng và Cập nhật trạng thái -->
+                    <!-- Cột Phải: Xử lý Đơn hàng -->
                     <div class="space-y-6">
-                        
-                        <!-- Cập nhật Trạng thái (Form) -->
                         <div class="bg-white rounded-xl shadow-lg p-6">
-                            <h4 class="text-lg font-bold text-gray-800 mb-4">Cập nhật Trạng thái</h4>
-                            <form id="updateStatusForm" action="admin_donhang" method="POST">
-                                <input type="hidden" name="action" value="update_status">
-                                <input type="hidden" name="id" value="${order.id}">
-                                
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái Đơn hàng</label>
-                                    <select name="status" id="orderStatusSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 border">
-                                        <option value="cho_xac_nhan" ${order.trangThaiDonHang == 'cho_xac_nhan' ? 'selected' : ''}>Chờ xác nhận</option>
-                                        <option value="da_xac_nhan" ${order.trangThaiDonHang == 'da_xac_nhan' ? 'selected' : ''}>Đã xác nhận</option>
-                                        <option value="dang_giao" ${order.trangThaiDonHang == 'dang_giao' ? 'selected' : ''}>Đang giao hàng</option>
-                                        <option value="da_giao" ${order.trangThaiDonHang == 'da_giao' ? 'selected' : ''}>Đã giao thành công</option>
-                                        <option value="da_huy" ${order.trangThaiDonHang == 'da_huy' ? 'selected' : ''}>Đã hủy</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái Thanh toán</label>
-                                    <select name="paymentStatus" id="paymentStatusSelect" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 border">
-                                        <option value="chua_thanh_toan" ${order.trangThaiThanhToan == 'chua_thanh_toan' ? 'selected' : ''}>Chưa thanh toán</option>
-                                        <option value="da_thanh_toan" ${order.trangThaiThanhToan == 'da_thanh_toan' ? 'selected' : ''}>Đã thanh toán</option>
-                                    </select>
-                                </div>
-                                
-                                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-medium transition">
-                                    Cập nhật thay đổi
-                                </button>
-                            </form>
-                        </div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-4">Xử lý Đơn hàng</h4>
+                            
+                            <!-- Hiển thị Trạng thái -->
+                            <div class="mb-6">
+                                <p class="text-sm text-gray-500 mb-1">Trạng thái hiện tại:</p>
+                                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    <c:choose>
+                                        <c:when test="${order.trangThaiDonHang == 'cho_xac_nhan'}">Chờ xác nhận</c:when>
+                                        <c:when test="${order.trangThaiDonHang == 'da_xac_nhan'}">Đã xác nhận</c:when>
+                                        <c:when test="${order.trangThaiDonHang == 'dang_giao'}">Đang giao hàng</c:when>
+                                        <c:when test="${order.trangThaiDonHang == 'hoan_thanh'}">Giao thành công</c:when>
+                                        <c:when test="${order.trangThaiDonHang == 'da_huy'}">Đã hủy</c:when>
+                                    </c:choose>
+                                </span>
+                            </div>
 
-                        <!-- Thông tin khách hàng -->
+                            <!-- Các Nút Hành động -->
+                            <div class="space-y-3">
+                                
+                                <!-- 1. Chờ xác nhận -->
+                                <c:if test="${order.trangThaiDonHang == 'cho_xac_nhan'}">
+                                    <form action="admin_donhang" method="POST">
+                                        <input type="hidden" name="action" value="next_step">
+                                        <input type="hidden" name="id" value="${order.id}">
+                                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-bold shadow-md transition">
+                                            <i class="fas fa-check mr-2"></i> Xác nhận Đơn hàng
+                                        </button>
+                                    </form>
+                                    <form action="admin_donhang" method="POST">
+                                        <input type="hidden" name="action" value="cancel">
+                                        <input type="hidden" name="id" value="${order.id}">
+                                        <button type="submit" class="w-full bg-white text-red-600 border border-red-200 py-2 rounded-lg hover:bg-red-50 font-medium transition" onclick="return confirm('Hủy đơn này?');">Hủy đơn hàng</button>
+                                    </form>
+                                </c:if>
+
+                                <!-- 2. Đã xác nhận -->
+                                <c:if test="${order.trangThaiDonHang == 'da_xac_nhan'}">
+                                    <form action="admin_donhang" method="POST">
+                                        <input type="hidden" name="action" value="next_step">
+                                        <input type="hidden" name="id" value="${order.id}">
+                                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 font-bold shadow-md transition">
+                                            <i class="fas fa-shipping-fast mr-2"></i> Bắt đầu Giao hàng
+                                        </button>
+                                    </form>
+                                    <!-- Nút Quay lại (Có lý do) -->
+                                    <button type="button" onclick="openRevertModal()" class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 font-medium transition">
+                                        <i class="fas fa-undo mr-2"></i> Quay lại "Chờ xác nhận"
+                                    </button>
+                                </c:if>
+
+                                <!-- 3. Đang giao -->
+                                <c:if test="${order.trangThaiDonHang == 'dang_giao'}">
+                                    <form action="admin_donhang" method="POST">
+                                        <input type="hidden" name="action" value="next_step">
+                                        <input type="hidden" name="id" value="${order.id}">
+                                        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-bold shadow-md transition" onclick="return confirm('Xác nhận đã giao và thu tiền?');">
+                                            <i class="fas fa-check-double mr-2"></i> Xác nhận Đã giao & Thu tiền
+                                        </button>
+                                    </form>
+                                    <!-- Nút Quay lại (Có lý do) -->
+                                    <button type="button" onclick="openRevertModal()" class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 font-medium transition">
+                                        <i class="fas fa-undo mr-2"></i> Quay lại "Đã xác nhận"
+                                    </button>
+                                </c:if>
+                                
+                                <!-- 4. Đã giao -->
+                                <c:if test="${order.trangThaiDonHang == 'hoan_thanh'}">
+                                    <div class="text-center p-3 bg-green-50 rounded-lg border border-green-200 text-green-800 font-bold">
+                                        <i class="fas fa-check-circle mr-1"></i> Đơn hàng hoàn tất
+                                    </div>
+                                    <!-- Nút Quay lại (Có lý do) -->
+                                    <button type="button" onclick="openRevertModal()" class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 font-medium transition mt-2">
+                                        <i class="fas fa-undo mr-2"></i> Quay lại "Đang giao" (Override)
+                                    </button>
+                                </c:if>
+
+                            </div>
+                        </div>
+                        
+                        <!-- Thông tin Giao hàng -->
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <h4 class="text-lg font-bold text-gray-800 mb-4">Thông tin Giao hàng</h4>
                             <div class="space-y-3 text-sm">
-                                <div>
-                                    <span class="text-gray-500 block">Người nhận:</span>
-                                    <span class="font-medium text-gray-900">${order.tenNguoiNhan}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-500 block">Số điện thoại:</span>
-                                    <span class="font-medium text-gray-900">${order.sdtNhan}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-500 block">Địa chỉ:</span>
-                                    <span class="font-medium text-gray-900">${order.diaChiGiaoHang}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-500 block">Ghi chú:</span>
-                                    <span class="font-medium text-gray-900 italic">"${order.ghiChu != null ? order.ghiChu : 'Không có'}"</span>
-                                </div>
+                                <div><span class="text-gray-500 block">Người nhận:</span> <span class="font-medium text-gray-900">${order.tenNguoiNhan}</span></div>
+                                <div><span class="text-gray-500 block">SĐT:</span> <span class="font-medium text-gray-900">${order.sdtNhan}</span></div>
+                                <div><span class="text-gray-500 block">Địa chỉ:</span> <span class="font-medium text-gray-900">${order.diaChiGiaoHang}</span></div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </main>
         </div>
     </div>
+
+    <!-- POPUP MODAL NHẬP LÝ DO (REVERT) -->
+    <div id="revert-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white">
+            <div class="mt-3">
+                <h3 class="text-lg leading-6 font-bold text-gray-900 text-center">Xác nhận quay lại bước trước</h3>
+                <div class="mt-2 px-2">
+                    <p class="text-sm text-gray-500 mb-4">Hành động này sẽ thay đổi trạng thái đơn hàng về bước trước đó. Vui lòng nhập lý do:</p>
+                    <form action="admin_donhang" method="POST">
+                        <input type="hidden" name="action" value="revert_status">
+                        <input type="hidden" name="id" value="${order.id}">
+                        <textarea name="reason" rows="3" required placeholder="Nhập lý do cụ thể..." class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 text-sm"></textarea>
+                        
+                        <div class="flex justify-end mt-4 space-x-3">
+                            <button type="button" onclick="closeRevertModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 text-sm">Hủy</button>
+                            <button type="submit" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm font-bold">Xác nhận Override</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <jsp:include page="admin_footer.jsp" />
 
-    <!-- Script xử lý logic trạng thái -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const orderSelect = document.getElementById('orderStatusSelect');
-            const paymentSelect = document.getElementById('paymentStatusSelect');
-            const form = document.getElementById('updateStatusForm');
-
-            function checkStatus() {
-                if (orderSelect.value === 'da_giao') {
-                    paymentSelect.value = 'da_thanh_toan';
-                    paymentSelect.disabled = true; // Vô hiệu hóa ô chọn
-                    
-                    // Thêm input hidden để vẫn gửi giá trị về server khi submit (vì disabled input không được gửi)
-                    let hiddenInput = document.getElementById('hiddenPaymentStatus');
-                    if (!hiddenInput) {
-                        hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'paymentStatus';
-                        hiddenInput.id = 'hiddenPaymentStatus';
-                        form.appendChild(hiddenInput);
-                    }
-                    hiddenInput.value = 'da_thanh_toan';
-                } else {
-                    paymentSelect.disabled = false;
-                    // Xóa input hidden nếu có
-                    const hiddenInput = document.getElementById('hiddenPaymentStatus');
-                    if (hiddenInput) hiddenInput.remove();
-                }
-            }
-
-            // Kiểm tra ngay khi load trang (để xử lý trường hợp đơn hàng đã giao rồi)
-            if (orderSelect && paymentSelect) {
-                checkStatus();
-                // Lắng nghe sự kiện thay đổi
-                orderSelect.addEventListener('change', checkStatus);
-            }
-        });
+        function openRevertModal() {
+            document.getElementById('revert-modal').classList.remove('hidden');
+        }
+        function closeRevertModal() {
+            document.getElementById('revert-modal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>

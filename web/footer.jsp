@@ -28,7 +28,6 @@
                 <h5 class="text-uppercase mb-4 fw-bold text-warning">Liên kết</h5>
                 <p><a href="about.jsp" class="text-white">Về chúng tôi</a></p>
                 <p><a href="shop" class="text-white">Cửa hàng</a></p>
-                <p><a href="contact.jsp" class="text-white">Liên hệ</a></p>
                 <p><a href="faq.jsp" class="text-white">Câu hỏi (FAQ)</a></p>
             </div>
 
