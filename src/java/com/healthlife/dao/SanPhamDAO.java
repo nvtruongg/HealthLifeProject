@@ -43,6 +43,8 @@ public class SanPhamDAO implements ISanPhamDAO{
         sp.setNgayCapNhat(rs.getTimestamp("ngay_cap_nhat"));
         return sp;
     }
+    
+    
     //Lấy tất cả sản phẩm đang kinh doanh - Giữ nguyên
     @Override
     public List<SanPham> getAllProducts() {

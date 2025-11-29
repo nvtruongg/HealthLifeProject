@@ -30,6 +30,20 @@ public class SanPham {
 
     public SanPham() {
     }
+    // Kiểm tra có giảm giá không (Giá gốc > Giá bán)
+    public boolean hasDiscount() {
+        return giaGoc != null && giaBan != null && giaGoc.compareTo(giaBan) > 0;
+    }
+
+    // Tính % giảm giá: (GiaGoc - GiaBan) / GiaGoc * 100
+    public int getDiscountPercentage() {
+        if (hasDiscount()) {
+            BigDecimal discount = giaGoc.subtract(giaBan);
+            return discount.divide(giaGoc, 2, java.math.RoundingMode.HALF_UP)
+                           .multiply(new BigDecimal(100)).intValue();
+        }
+        return 0;
+    }
 
     // Constructor đầy đủ
     public SanPham(int id, String maSanPham, String tenSanPham, int idDanhMuc, int idThuongHieu, String moTaNgan, String moTaChiTiet, BigDecimal giaGoc, BigDecimal giaBan, int soLuongTon, String donViTinh, String hinhAnhDaiDien, String thanhPhan, String congDung, String lieuDungCachDung, String baoQuan, String trangThai, Timestamp ngayTao, Timestamp ngayCapNhat) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class SanPhamService implements ISanPhamService {
     private ISanPhamDAO sanPhamDAO = new SanPhamDAO();
+    private int limit;
 
     @Override
     public List<SanPham> getAllProducts() {

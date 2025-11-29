@@ -45,7 +45,8 @@
 
                 <!-- Biểu tượng tài khoản và giỏ hàng -->
                 <ul class="navbar-nav align-items-center flex-row justify-content-end gap-3">
-                    <!-- Logic Tài khoản (Tự động kiểm tra session "account") -->
+                    
+                    <!-- Logic Tài khoản (Tự động kiểm tra session "user") -->
                     <c:if test="${empty sessionScope.user}">
                         <li class="nav-item me-3">
                             <a href="login.jsp" class="nav-link text-white d-flex align-items-center fw-500 text-dark">
@@ -53,13 +54,26 @@
                             </a>
                         </li>
                     </c:if>
+                    
                     <c:if test="${not empty sessionScope.user}">
+                        
+                        <!-- --- PHẦN THÊM MỚI: NÚT ADMIN --- -->
+                        <!-- Chỉ hiện nếu role là 'admin' -->
+                        <c:if test="${sessionScope.user.role == 'admin'}">
+                            <li class="nav-item me-2">
+                                <a href="${pageContext.request.contextPath}/admin" class="btn btn-warning btn-sm d-flex align-items-center fw-bold text-dark shadow-sm" style="border-radius: 20px;">
+                                    <i class="bi bi-shield-lock-fill me-1"></i> Quản trị
+                                </a>
+                            </li>
+                        </c:if>
+                        <!-- --- KẾT THÚC PHẦN THÊM MỚI --- -->
+
                         <li class="nav-item dropdown me-3" style="z-index: 2000;">
                             <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-500" href="#" id="navbarDropdownAccount" role="button" 
                                accesskey=""data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap;">
                                 <i class="bi bi-person-circle me-2 fs-5" style="font-size: 1.2rem;"></i> 
                                 <span class="d-inline-block text-truncate" style="max-width: 150px;">
-                                    Chào,${sessionScope.user.fullname}
+                                    Chào, ${sessionScope.user.fullname}
                                 </span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAccount">
@@ -70,6 +84,7 @@
                             </ul>
                         </li>
                     </c:if>
+                    
                     <li class="nav-item me-3">
                         <!-- 1. Tính toán số lượng -->
                         <c:set var="cartItemCount" value="${empty sessionScope.cart ? 0 : sessionScope.cart.tongSoLuongTatCaItems}" />
@@ -107,6 +122,17 @@
     .navbar .btn-warning:hover {
         background-color: #FFD43B;
     }
+    /* Style riêng cho nút Quản trị để nó khác biệt */
+    a.btn-warning.btn-sm {
+        background-color: #FFD43B !important; /* Màu vàng cam */
+        color: #000 !important;
+        border: 1px solid #e0a800;
+    }
+    a.btn-warning.btn-sm:hover {
+        background-color: #e0a800 !important;
+        color: #fff !important;
+    }
+
     .nav-link:hover {
         color: #003D9D !important;
         background-color: #FFD43B !important;
