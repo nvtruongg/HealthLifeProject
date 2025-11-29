@@ -44,9 +44,8 @@ public class SanPhamService implements ISanPhamService {
     public boolean deleteProduct(int id) {
         return sanPhamDAO.deleteProduct(id);
     }
-
     @Override
-    public List<SanPham> getTopSellingProducts(int i) {
-        return sanPhamDAO.getTopSellingProducts(limit);
+    public List<SanPham> filterProducts(String categoryId, String brandId, String priceRange, String sortType){
+        return sanPhamDAO.filterProducts(categoryId, brandId, priceRange, sortType);
     }
 }

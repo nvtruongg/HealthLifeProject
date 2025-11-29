@@ -6,6 +6,7 @@ package com.healthlife.dao.interfaces;
 
 import com.healthlife.model.CartItem;
 import com.healthlife.model.DonHang;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,4 +15,8 @@ import java.util.Map;
  */
 public interface IOrderDAO {
     int saveOrder(DonHang donHang, Map<Integer, CartItem> selectedItems) throws Exception;
+    
+    List<DonHang> getOrdersByUserId(int userId);
+    
+    DonHang getOrderById(int orderId);
 }

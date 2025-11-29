@@ -48,47 +48,12 @@ public class SanPhamDAO implements ISanPhamDAO{
     //Lấy tất cả sản phẩm đang kinh doanh - Giữ nguyên
     @Override
     public List<SanPham> getAllProducts() {
-        List<SanPham> list = new ArrayList<>();
-        String query = "SELECT * FROM san_pham WHERE trang_thai = 'dang_kinh_doanh'";
-       
-        try {
-            connection = DBContext.getConnection();
-            ps = connection.prepareStatement(query);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(mapResultSetToSanPham(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeConnections();
-        }
-        return list;
+        return filterProducts(null, null, null, null);
     }
     //Lấy sản phẩm theo ID Danh Mục - Giữ nguyên
     @Override
     public List<SanPham> getProductsByCategoryID(String categoryId) {
-        List<SanPham> list = new ArrayList<>();
-        String query = "SELECT p.* FROM san_pham p " +
-                       "JOIN danh_muc d ON p.id_danh_muc = d.id " +
-                       "WHERE p.trang_thai = 'dang_kinh_doanh' " +
-                       "AND (d.id = ? OR d.id_danh_muc_cha = ?)";
-       
-        try {
-            connection = DBContext.getConnection();
-            ps = connection.prepareStatement(query);
-            ps.setString(1, categoryId);
-            ps.setString(2, categoryId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(mapResultSetToSanPham(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeConnections();
-        }
-        return list;
+        return filterProducts(categoryId, null, null, null);
     }
     // Lấy sản phẩm theo ID - Giữ nguyên
     @Override
@@ -221,33 +186,72 @@ public class SanPhamDAO implements ISanPhamDAO{
     }
 
     @Override
-    public List<SanPham> getTopSellingProducts(int limit) {
+    public List<SanPham> filterProducts(String categoryId, String brandId, String priceRange, String sortType) {
         List<SanPham> list = new ArrayList<>();
-        // Query: Lấy thông tin sản phẩm, JOIN với chi tiết đơn hàng để tính tổng bán
-        // Chỉ tính các đơn hàng có trạng thái 'hoan_thanh'
-        String query = "SELECT sp.*, dm.ten_danh_muc, th.ten_thuong_hieu, SUM(ct.so_luong) as tong_ban " +
-                       "FROM san_pham sp " +
-                       "JOIN chi_tiet_don_hang ct ON sp.id = ct.id_san_pham " +
-                       "JOIN don_hang dh ON ct.id_don_hang = dh.id " +
-                       "LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id " +
-                       "LEFT JOIN thuong_hieu th ON sp.id_thuong_hieu = th.id " +
-                       "WHERE dh.trang_thai_don_hang = 'hoan_thanh' " + 
-                       "AND sp.trang_thai = 'dang_kinh_doanh' " +
-                       "GROUP BY sp.id " +
-                       "ORDER BY tong_ban DESC " +
-                       "LIMIT ?";
-                       
-        try (Connection conn = new DBContext().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, limit);
+        List<Object> params = new ArrayList<>();
+        
+        // 1. Câu truy vấn cơ bản
+        StringBuilder sql = new StringBuilder("SELECT p.* FROM san_pham p ");
+        sql.append("LEFT JOIN danh_muc d ON p.id_danh_muc = d.id ");
+        sql.append("WHERE p.trang_thai = 'dang_kinh_doanh' ");
+
+        // 2. Điều kiện Danh mục (Cha hoặc Con)
+        if (categoryId != null && !categoryId.isEmpty()) {
+            sql.append("AND (d.id = ? OR d.id_danh_muc_cha = ?) ");
+            params.add(categoryId);
+            params.add(categoryId);
+        }
+
+        // 3. Điều kiện Thương hiệu
+        if (brandId != null && !brandId.isEmpty()) {
+            sql.append("AND p.id_thuong_hieu = ? ");
+            params.add(brandId);
+        }
+
+        // 4. Điều kiện Giá
+        if (priceRange != null && !priceRange.isEmpty()) {
+            if (priceRange.equals("500000-max")) {
+                sql.append("AND p.gia_ban >= 500000 ");
+            } else if (priceRange.contains("-")) {
+                String[] parts = priceRange.split("-");
+                if (parts.length == 2) {
+                    sql.append("AND p.gia_ban BETWEEN ? AND ? ");
+                    params.add(parts[0]);
+                    params.add(parts[1]);
+                }
+            }
+        }
+
+        // 5. Sắp xếp
+        if (sortType != null) {
+            switch (sortType) {
+                case "asc": sql.append("ORDER BY p.gia_ban ASC "); break;
+                case "desc": sql.append("ORDER BY p.gia_ban DESC "); break;
+                default: sql.append("ORDER BY p.id DESC "); break; // Mặc định mới nhất
+            }
+        } else {
+            sql.append("ORDER BY p.id DESC ");
+        }
+
+        // --- IN LOG ĐỂ KIỂM TRA ---
+        System.out.println("DEBUG SQL: " + sql.toString());
+        System.out.println("DEBUG PARAMS: " + params);
+        // --------------------------
+        // 6. Thực thi truy vấn
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            
+            // Gán tham số động
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                SanPham sp = mapResultSetToSanPham(rs);
-                sp.setTenDanhMuc(rs.getString("ten_danh_muc"));
-                sp.setTenThuongHieu(rs.getString("ten_thuong_hieu"));
-                list.add(sp);
+                list.add(mapResultSetToSanPham(rs));
             }
         } catch (Exception e) {
+            System.out.println("LỖI SQL FILTER: " + e.getMessage());
             e.printStackTrace();
         }
         return list;

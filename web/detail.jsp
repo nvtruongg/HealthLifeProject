@@ -123,7 +123,7 @@
                 <div class="card product-card mb-4">
                     <div class="row g-0">
                         <div class="col-md-5">
-                            <img src="${product.hinhAnhDaiDien}" class="product-img-main" alt="${product.tenSanPham}">
+                            <img src="Images/${product.id}.jpg" class="product-img-main" onerror="this.src='${p.hinhAnhDaiDien}'">
                             <div class="product-thumbs d-flex justify-content-center mt-2">
                                 <img src="${product.hinhAnhDaiDien}" class="active">
                             </div>

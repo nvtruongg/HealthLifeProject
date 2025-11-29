@@ -57,6 +57,7 @@ public class ThuongHieuServlet extends HttpServlet {
         List<ThuongHieu> list = thuongHieuService.getAll();
         request.setAttribute("thuongHieuList", list);
         request.getRequestDispatcher("admin_thuonghieu.jsp").forward(request, response);
+        request.getRequestDispatcher("shop.jsp").forward(request, response);
     }
 
     private void add(HttpServletRequest request, HttpServletResponse response)

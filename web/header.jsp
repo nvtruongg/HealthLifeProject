@@ -11,7 +11,7 @@
     <div class="bg-primary text-white py-1 small">
         <div class="container d-flex justify-content-between">
             <div>
-                💊 Sức khỏe của bạn – Niềm vui của chúng tôi
+                Sức khỏe của bạn – Niềm vui của chúng tôi
             </div>
             <div>
                 📞 Hotline: <strong>037 999 6828</strong>
