@@ -11,6 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Comparator;
 
 @WebServlet(name = "DonHangServlet", urlPatterns = {"/admin_donhang"})
 public class DonHangServlet extends HttpServlet {
@@ -47,12 +49,63 @@ public class DonHangServlet extends HttpServlet {
         }
     }
 
-    private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<DonHang> list = donHangService.getAllOrders();
-        request.setAttribute("orderList", list);
-        // Trỏ vào thư mục con ADMIN/QuanLyDonHang
-        request.getRequestDispatcher("admin_donhang.jsp").forward(request, response);
+   //
+private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // 1. Lấy danh sách gốc
+    List<DonHang> list = donHangService.getAllOrders();
+
+    // 2. Lấy tham số sắp xếp từ URL
+    String sortBy = request.getParameter("sortBy"); // id, code, customer, date, total, status
+    String sortOrder = request.getParameter("sortOrder"); // asc, desc
+
+    // Mặc định
+    if (sortBy == null) sortBy = "id";
+    if (sortOrder == null) sortOrder = "desc"; // Đơn hàng thường ưu tiên xem mới nhất (giảm dần) trước
+
+    // 3. Xử lý sắp xếp
+    if (list != null && !list.isEmpty()) {
+        switch (sortBy) {
+            case "code":
+                // Sắp xếp theo Mã đơn hàng
+                list.sort(Comparator.comparing(DonHang::getMaDonHang));
+                break;
+            case "customer":
+                // Sắp xếp theo Tên người nhận (xử lý null)
+                list.sort(Comparator.comparing(o -> o.getTenNguoiNhan() == null ? "" : o.getTenNguoiNhan()));
+                break;
+            case "date":
+                // Sắp xếp theo Ngày đặt
+                list.sort(Comparator.comparing(DonHang::getNgayDat));
+                break;
+            case "total":
+                // Sắp xếp theo Tổng tiền (BigDecimal)
+                list.sort(Comparator.comparing(DonHang::getTongThanhToan));
+                break;
+            case "status":
+                // Sắp xếp theo Trạng thái
+                list.sort(Comparator.comparing(DonHang::getTrangThaiDonHang));
+                break;
+            case "id":
+            default:
+                // Mặc định theo ID
+                list.sort(Comparator.comparingInt(DonHang::getId));
+                break;
+        }
+
+        // Đảo ngược nếu là desc
+        if ("desc".equals(sortOrder)) {
+            Collections.reverse(list);
+        }
     }
+    
+    // 4. Gửi dữ liệu và trạng thái sắp xếp về JSP
+    request.setAttribute("orderList", list);
+    request.setAttribute("currentSortBy", sortBy);
+    request.setAttribute("currentSortOrder", sortOrder);
+    
+    // Trỏ vào thư mục con ADMIN/QuanLyDonHang
+    request.getRequestDispatcher("admin_donhang.jsp").forward(request, response);
+}
 
     private void viewDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {

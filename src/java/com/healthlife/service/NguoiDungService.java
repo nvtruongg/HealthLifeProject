@@ -60,4 +60,9 @@ public class NguoiDungService implements INguoiDungService {
     public NguoiDung getUserById(int id) {
         return nguoiDungDAO.getUserById(id);
     }
+
+    @Override
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        return nguoiDungDAO.updatePasswordByEmail(email, newPassword);
+    }
 }

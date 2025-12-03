@@ -26,6 +26,12 @@ public class SanPhamDAO implements ISanPhamDAO{
         sp.setMaSanPham(rs.getString("ma_san_pham"));
         sp.setTenSanPham(rs.getString("ten_san_pham"));
         sp.setIdDanhMuc(rs.getInt("id_danh_muc"));
+        try {
+        // Lấy tên danh mục dựa trên kết quả JOIN
+        sp.setTenDanhMuc(rs.getString("ten_danh_muc"));
+    } catch (SQLException e) {
+        // Bỏ qua nếu cột không tồn tại (để tránh lỗi ở các hàm khác không dùng JOIN)
+    }
         sp.setIdThuongHieu(rs.getInt("id_thuong_hieu"));
         sp.setGiaGoc(rs.getBigDecimal("gia_goc"));
         sp.setGiaBan(rs.getBigDecimal("gia_ban"));
@@ -191,7 +197,7 @@ public class SanPhamDAO implements ISanPhamDAO{
         List<Object> params = new ArrayList<>();
         
         // 1. Câu truy vấn cơ bản
-        StringBuilder sql = new StringBuilder("SELECT p.* FROM san_pham p ");
+        StringBuilder sql = new StringBuilder("SELECT p.*, d.ten_danh_muc FROM san_pham p ");
         sql.append("LEFT JOIN danh_muc d ON p.id_danh_muc = d.id ");
         sql.append("WHERE p.trang_thai = 'dang_kinh_doanh' ");
 

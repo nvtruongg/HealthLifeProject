@@ -109,14 +109,76 @@
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên Danh mục</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mô tả</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Cha</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
-                                </tr>
-                            </thead>
+    <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_danhmuc?action=list&sortBy=id&sortOrder=${currentSortBy == 'id' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                ID
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'id'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_danhmuc?action=list&sortBy=name&sortOrder=${currentSortBy == 'name' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Tên Danh mục
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'name'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_danhmuc?action=list&sortBy=description&sortOrder=${currentSortBy == 'description' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Mô tả
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'description'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_danhmuc?action=list&sortBy=parent&sortOrder=${currentSortBy == 'parent' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                ID Cha
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'parent'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Hành động
+        </th>
+    </tr>
+</thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 
                                 <c:forEach var="dm" items="${danhMucList}">

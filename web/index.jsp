@@ -62,9 +62,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="hero-image animate-float">
-                        <img src="${pageContext.request.contextPath}/Images/logo.png" alt="Featured Products">
-                    </div>
+                    
                 </div>
             </div>
 

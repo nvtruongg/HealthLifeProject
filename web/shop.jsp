@@ -87,7 +87,7 @@
                 color: #333;
                 margin: 0;
             }
-            .sort-options {
+.sort-options {
                 display: flex;
                 gap: 8px;
                 align-items: center;
@@ -178,7 +178,7 @@
                 text-decoration: line-through;
                 margin-left: 4px;
             }
-            .btn-buy {
+.btn-buy {
                 background-color: #003D9D;
                 color: white;
                 border: none;
@@ -255,7 +255,7 @@
 
                             <!-- 1. Lọc theo Giá -->
                             <div class="mb-3">
-                                <div class="filter-group-title">Giá bán <i class="bi bi-chevron-up"></i></div>
+<div class="filter-group-title">Giá bán <i class="bi bi-chevron-up"></i></div>
                                 <div>
                                     <label class="price-option ${param.price == '0-100000' ? 'active' : ''}">
                                         <input type="radio" name="price" value="0-100000" class="filter-radio" onchange="this.form.submit()">
@@ -291,7 +291,7 @@
 
                                             <!-- Tùy chọn 'Tất cả' để người dùng có thể bỏ chọn -->
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="bid" value="" id="brand_all" 
+<input class="form-check-input" type="radio" name="bid" value="" id="brand_all" 
                                                        ${empty param.bid ? 'checked' : ''} onchange="this.form.submit()">
                                                 <label class="form-check-label" for="brand_all">
                                                     Tất cả
@@ -336,7 +336,7 @@
                 <!-- === CỘT PHẢI: DANH SÁCH SẢN PHẨM === -->
                 <div class="col-lg-10">
                     <!-- Header: Tên danh mục & Sắp xếp -->
-                    <div class="shop-header py-2 px-3" >
+<div class="shop-header py-2 px-3" >
                         <!-- Tiêu đề danh mục -->
                         <h1 class="category-title">${pageTitle}</h1>
 
@@ -358,189 +358,151 @@
                                 Giá cao
                             </a>
                         </div>
+                    </div>
 
-                        <!-- 2. Các bộ lọc khác (Accordion) -->
-                        <div class="accordion" id="filterAccordion">
-                            <!-- Loại thuốc -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                                        Loại thuốc / Sản phẩm
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#filterAccordion">
-                                    <div class="accordion-body">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="type1">
-                                            <label class="form-check-label" for="type1">Dạng viên</label>
+                    <!-- Lưới sản phẩm -->
+                    <div class="row g-2">
+                        <c:forEach items="${listP}" var="p" varStatus="status">
+                            <div class="col-6 col-md-4 col-lg-3 product-item">
+                                <div class="product-card h-100">
+                                    <a href="detail?pid=${p.id}" class="card-img-wrapper">
+                                        <img src="Images/${p.id}.jpg" class="card-img-top" onerror="this.src='${p.hinhAnhDaiDien}'">
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="detail?pid=${p.id}" title="${p.tenSanPham}">${p.tenSanPham}</a>
+                                        </h5>
+
+                                        <!-- Đơn vị tính -->
+                                        <div class="product-unit">${p.donViTinh}</div>
+
+                                        <div class="price-section">
+                                            <div class="d-flex align-items-baseline flex-wrap">
+                                                <span class="current-price">
+                                                    <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaBan}" /> đ
+                                                </span>
+                                                <c:if test="${p.giaGoc > p.giaBan}">
+                                                    <span class="original-price">
+<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaGoc}" /> đ
+                                                    </span>
+                                                </c:if>
+                                            </div>
                                         </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="type2">
-                                            <label class="form-check-label" for="type2">Dạng lỏng</label>
-                                        </div>
+
+                                        <!-- Nút Mua hàng (AJAX) -->
+                                        <button type="button" class="btn-buy btn-add-to-cart" data-product-id="${p.id}">
+                                            Chọn mua
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Thương hiệu -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                                        Thương hiệu
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#filterAccordion">
-                                    <div class="accordion-body">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="brand1">
-                                            <label class="form-check-label" for="brand1">Blackmores</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="brand2">
-                                            <label class="form-check-label" for="brand2">DHC</label>
-                                        </div>
-                                    </div>
+                        </c:forEach>
+
+                        <!-- Thông báo nếu không có sản phẩm -->
+                        <c:if test="${empty listP}">
+                            <div class="col-12">
+                                <div class="text-center py-5">
+                                    <img src="https://placehold.co/200x200/F0F2F5/AAAAAA?text=Khong+tim+thay" alt="Empty" class="mb-3 rounded-circle">
+                                    <h4>Không tìm thấy sản phẩm nào</h4>
+                                    <p class="text-muted">Vui lòng thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Nút reset bộ lọc -->
-                        <a href="shop${not empty param.cid ? '?cid='.concat(param.cid) : ''}" class="btn btn-outline-secondary w-100 mt-3 btn-sm">
-                            Xóa bộ lọc
-                        </a>
-                    </form>
-                </div>
-            </div>
-
-            <!-- === CỘT PHẢI: DANH SÁCH SẢN PHẨM === -->
-            <div class="col-lg-9">
-                <!-- Header: Tên danh mục & Sắp xếp -->
-                <div class="shop-header">
-                    <!-- Tiêu đề danh mục -->
-                    <h1 class="category-title">${pageTitle}</h1>
-                    
-                    <!-- Sắp xếp -->
-                    <div class="sort-options">
-                        <span class="text-muted me-2 small">Sắp xếp theo:</span>
-                        
-                        <!-- Logic JS sẽ set value vào input ẩn và submit form -->
-                        <a href="javascript:void(0)" onclick="submitSort('best')" 
-                           class="sort-btn ${empty param.sort || param.sort == 'best' ? 'active' : ''}">
-                           Bán chạy
-                        </a>
-                        <a href="javascript:void(0)" onclick="submitSort('asc')" 
-                           class="sort-btn ${param.sort == 'asc' ? 'active' : ''}">
-                           Giá thấp
-                        </a>
-                        <a href="javascript:void(0)" onclick="submitSort('desc')" 
-                           class="sort-btn ${param.sort == 'desc' ? 'active' : ''}">
-                           Giá cao
-                        </a>
+                        </c:if>
+                    </div>
+                    <!-- Nút Load More -->
+                    <div class="text-center">
+                        <button id="loadMoreBtn" style="display: none;">Xem thêm <i class="bi bi-chevron-down ms-1"></i></button>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Lưới sản phẩm -->
-                <div class="row g-3">
-                    <c:forEach items="${listP}" var="p">
-                        <div class="col-6 col-md-4 col-xl-3"> <!-- Responsive: 2 cột mobile, 3 cột tablet, 4 cột desktop -->
-                            <div class="product-card h-100">
-                                <a href="detail?pid=${p.id}">
-                                    <img src="${p.hinhAnhDaiDien}" class="card-img-top" alt="${p.tenSanPham}">
-                                </a>
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="detail?pid=${p.id}">${p.tenSanPham}</a>
-                                    </h5>
-                                    
-                                    <!-- Đơn vị tính -->
-                                    <div class="text-muted small mb-2">${p.donViTinh}</div>
-                                    
-                                    <div class="price-section">
-                                        <div class="d-flex align-items-baseline">
-                                            <span class="current-price">
-                                                <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaBan}" /> đ
-                                            </span>
-                                            <span class="original-price">
-                                                <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaGoc}" />
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Nút Mua hàng (AJAX) -->
-                                    <button type="button" class="btn-buy btn-add-to-cart" data-product-id="${p.id}">
-                                        Chọn mua
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                    
-                    <!-- Thông báo nếu không có sản phẩm -->
-                    <c:if test="${empty listP}">
-                        <div class="col-12">
-                            <div class="text-center py-5">
-                                <img src="https://placehold.co/200x200/F0F2F5/AAAAAA?text=Khong+tim+thay" alt="Empty" class="mb-3" style="width: 150px; border-radius: 50%;">
-                                <h4>Không tìm thấy sản phẩm nào</h4>
-                                <p class="text-muted">Vui lòng thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
-                            </div>
-                        </div>
-                    </c:if>
+        <!-- Footer & Toast -->
+        <%@ include file="footer.jsp" %>
+
+        <!-- TOAST THÔNG BÁO (AJAX) -->
+        <div class="toast-container" style="position: fixed; top: 80px; right: 20px; z-index: 1055;">
+            <div id="addToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto"><i class="bi bi-check-circle-fill"></i> Thành công!</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body bg-white" id="toast-message-body">
+                    Sản phẩm đã được thêm vào giỏ hàng.
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Footer & Toast -->
-    <%@ include file="footer.jsp" %>
-    
-    <!-- TOAST THÔNG BÁO (AJAX) -->
-    <div class="toast-container" style="position: fixed; top: 80px; right: 20px; z-index: 1055;">
-        <div id="addToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
-            <div class="toast-header bg-success text-white">
-                <strong class="me-auto"><i class="bi bi-check-circle-fill"></i> Thành công!</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body bg-white" id="toast-message-body">
-                Sản phẩm đã được thêm vào giỏ hàng.
-            </div>
-        </div>
-    </div>
+        <!-- SCRIPT -->
+        <script>
+            // Hàm xử lý Sắp xếp
+            function submitSort(sortType) {
+                // Gán giá trị vào input ẩn
+                document.getElementById('sortInput').value = sortType;
+                // Submit form bộ lọc để giữ nguyên các điều kiện lọc khác (giá, danh mục...)
+document.getElementById('filterForm').submit();
+            }
 
-    <!-- SCRIPT -->
-    <script>
-        // Hàm xử lý Sắp xếp
-        function submitSort(sortType) {
-            // Gán giá trị vào input ẩn
-            document.getElementById('sortInput').value = sortType;
-            // Submit form bộ lọc để giữ nguyên các điều kiện lọc khác (giá, danh mục...)
-            document.getElementById('filterForm').submit();
-        }
+            document.addEventListener("DOMContentLoaded", function () {
+                // --- LOGIC LOAD MORE (CLIENT-SIDE) ---
+                const items = document.querySelectorAll('.product-item');
+                const loadMoreBtn = document.getElementById('loadMoreBtn');
+                let itemsToShow = 12; // Số lượng hiển thị ban đầu và mỗi lần load thêm
 
-        // Logic AJAX Thêm vào giỏ (Giữ nguyên code cũ của bạn)
-        document.addEventListener("DOMContentLoaded", function () {
-            const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault(); 
-                    const productId = this.dataset.productId;
-                    fetch('cart-handler?action=add&id=' + productId)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                const cartBadge = document.getElementById('cart-count-badge');
-                                if(cartBadge) cartBadge.innerText = data.cartItemCount;
-                                const toastEl = document.getElementById('addToast');
-                                const toastBody = document.getElementById('toast-message-body');
-                                toastBody.innerText = data.message;
-                                const addToast = new bootstrap.Toast(toastEl);
-                                addToast.show();
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                // Hàm hiển thị sản phẩm
+                function showItems(count) {
+                    let visibleCount = 0;
+                    items.forEach((item, index) => {
+                        if (index < count) {
+                            item.classList.remove('hidden');
+                            visibleCount++;
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+
+                    // Ẩn nút nếu đã hiển thị hết
+                    if (visibleCount >= items.length) {
+                        loadMoreBtn.style.display = 'none';
+                    } else {
+                        loadMoreBtn.style.display = 'block';
+                    }
+                }
+
+                // Khởi chạy lần đầu
+                showItems(itemsToShow);
+
+                // Sự kiện bấm nút Load More
+                loadMoreBtn.addEventListener('click', function () {
+                    itemsToShow += 12; // Tăng thêm 12
+                    showItems(itemsToShow);
+                });
+
+                // --- LOGIC ADD TO CART
+                const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        const productId = this.dataset.productId;
+                        fetch('cart-handler?action=add&id=' + productId)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        const cartBadge = document.getElementById('cart-count-badge');
+                                        if (cartBadge)
+                                            cartBadge.innerText = data.cartItemCount;
+                                        const toastEl = document.getElementById('addToast');
+                                        const toastBody = document.getElementById('toast-message-body');
+                                        toastBody.innerText = data.message;
+                                        const addToast = new bootstrap.Toast(toastEl);
+                                        addToast.show();
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+});
                 });
             });
-        });
-    </script>
+        </script>
 
-</body>
+    </body>
 </html>

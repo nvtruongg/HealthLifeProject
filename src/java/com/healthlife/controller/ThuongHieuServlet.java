@@ -10,6 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Servlet Controller cho chức năng Quản lý Thương hiệu.
@@ -52,13 +54,50 @@ public class ThuongHieuServlet extends HttpServlet {
         }
     }
 
-    private void list(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<ThuongHieu> list = thuongHieuService.getAll();
-        request.setAttribute("thuongHieuList", list);
-        request.getRequestDispatcher("admin_thuonghieu.jsp").forward(request, response);
-        request.getRequestDispatcher("shop.jsp").forward(request, response);
+    //
+private void list(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    // 1. Lấy danh sách gốc
+    List<ThuongHieu> list = thuongHieuService.getAll();
+
+    // 2. Lấy tham số sắp xếp từ URL
+    String sortBy = request.getParameter("sortBy"); // id, name, origin
+    String sortOrder = request.getParameter("sortOrder"); // asc, desc
+
+    // Mặc định
+    if (sortBy == null) sortBy = "id";
+    if (sortOrder == null) sortOrder = "asc";
+
+    // 3. Xử lý sắp xếp
+    if (list != null && !list.isEmpty()) {
+        switch (sortBy) {
+            case "name":
+                // Sắp xếp theo Tên Thương hiệu (A-Z)
+                list.sort(Comparator.comparing(ThuongHieu::getTenThuongHieu));
+                break;
+            case "origin":
+                // Sắp xếp theo Xuất xứ (A-Z)
+                list.sort(Comparator.comparing(ThuongHieu::getXuatXu));
+                break;
+            default:
+                // Mặc định theo ID
+                list.sort(Comparator.comparingInt(ThuongHieu::getId));
+                break;
+        }
+
+        // Đảo ngược nếu là desc
+        if ("desc".equals(sortOrder)) {
+            Collections.reverse(list);
+        }
     }
+
+    // 4. Gửi dữ liệu về JSP
+    request.setAttribute("thuongHieuList", list);
+    request.setAttribute("currentSortBy", sortBy);
+    request.setAttribute("currentSortOrder", sortOrder);
+    
+    request.getRequestDispatcher("admin_thuonghieu.jsp").forward(request, response);
+}
 
     private void add(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

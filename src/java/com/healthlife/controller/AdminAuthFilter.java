@@ -60,7 +60,10 @@ public class AdminAuthFilter implements Filter {
         if (path.startsWith("/assets/") || path.startsWith("/Images/") || path.startsWith("/css/") || path.startsWith("/js/") ||
             path.equals("/") || path.equals("/index") || path.equals("/index.jsp") || 
             path.equals("/shop") || path.equals("/shop.jsp") || 
-            path.equals("/logout") || path.equals("/search") || path.equals("/cart-view")) {
+            path.equals("/logout") || path.equals("/search") || path.equals("/cart-view") ||
+            path.equals("/forgot_pasword") || path.equals("/forgot_pasword.jsp")||
+            path.equals("/verify_otp.jsp") ||path.equals("/verify_otp")||
+            path.equals("/register")|| path.equals("/register.jsp") )  {
             
             chain.doFilter(request, response);
             return;

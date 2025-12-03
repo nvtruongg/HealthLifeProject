@@ -13,4 +13,5 @@ public interface INguoiDungDAO {
     NguoiDung getUserById(int id);
     boolean updateUser(NguoiDung user); // Dùng để sửa role, status, info
     boolean deleteUser(int id);
+     boolean updatePasswordByEmail(String email, String newPassword);
 }

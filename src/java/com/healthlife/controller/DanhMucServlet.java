@@ -10,6 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Comparator;
 
 /*
  * Servlet Controller cho DanhMuc.
@@ -59,17 +61,55 @@ public class DanhMucServlet extends HttpServlet {
         }
     }
 
-    private void listCategories(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        List<DanhMuc> categoryList = danhMucService.getAllCategories();
-        
-        // ĐỔI TÊN ATTRIBUTE: "categoryList" -> "danhMucList"
-        request.setAttribute("danhMucList", categoryList);
-        
-        // ĐỔI TÊN FILE JSP: "manage_categories.jsp" -> "manage_danhmuc.jsp"
-        request.getRequestDispatcher("admin_danhmuc.jsp").forward(request, response);
+    //
+private void listCategories(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+    
+    // 1. Lấy danh sách gốc
+    List<DanhMuc> categoryList = danhMucService.getAllCategories();
+    
+    // 2. Lấy tham số sắp xếp từ URL
+    String sortBy = request.getParameter("sortBy"); // id, name, description, parent
+    String sortOrder = request.getParameter("sortOrder"); // asc, desc
+
+    // Mặc định
+    if (sortBy == null) sortBy = "id";
+    if (sortOrder == null) sortOrder = "asc";
+
+    // 3. Xử lý sắp xếp
+    if (categoryList != null && !categoryList.isEmpty()) {
+        switch (sortBy) {
+            case "name":
+                // Sắp xếp theo Tên Danh mục
+                categoryList.sort(Comparator.comparing(DanhMuc::getTenDanhMuc));
+                break;
+            case "description":
+                // Sắp xếp theo Mô tả (xử lý null để tránh lỗi)
+                categoryList.sort(Comparator.comparing(dm -> dm.getMoTa() == null ? "" : dm.getMoTa()));
+                break;
+            case "parent":
+                // Sắp xếp theo ID Cha (đưa danh mục gốc/null lên đầu)
+                categoryList.sort(Comparator.comparingInt(dm -> dm.getIdDanhMucCha() == null ? 0 : dm.getIdDanhMucCha()));
+                break;
+            default:
+                // Mặc định theo ID
+                categoryList.sort(Comparator.comparingInt(DanhMuc::getId));
+                break;
+        }
+
+        // Đảo ngược nếu là desc
+        if ("desc".equals(sortOrder)) {
+            Collections.reverse(categoryList);
+        }
     }
+    
+    // 4. Gửi dữ liệu và trạng thái sắp xếp về JSP
+    request.setAttribute("danhMucList", categoryList);
+    request.setAttribute("currentSortBy", sortBy);
+    request.setAttribute("currentSortOrder", sortOrder);
+    
+    request.getRequestDispatcher("admin_danhmuc.jsp").forward(request, response);
+}
     
     private void addCategory(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -137,4 +137,18 @@ public class NguoiDungDAO implements INguoiDungDAO {
         u.setCreatedAt(rs.getTimestamp("ngay_tao"));
         return u;
     }
+
+    @Override
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+         String sql = "UPDATE nguoi_dung SET mat_khau = ? WHERE email = ?";
+        try (Connection conn = new DBContext().getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setString(2, email);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

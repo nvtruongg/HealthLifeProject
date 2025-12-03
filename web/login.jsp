@@ -75,6 +75,7 @@
             font-size: 16px;
             font-weight: 600;
             transition: all 0.3s;
+            margin-top: 10px; /* Thêm khoảng cách với link quên mật khẩu */
         }
 
         .btn:hover {
@@ -102,32 +103,47 @@
         .register-link a:hover {
             text-decoration: underline;
         }
-        .success {
-    color: #4f8a10;
-    background-color: #dff2bf;
-    padding: 10px;
-    border-left: 5px solid #4f8a10;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    animation: fadeIn 0.6s ease;
-}
+        
+        /* --- STYLE MỚI CHO LINK QUÊN MẬT KHẨU --- */
+        .forgot-password-link {
+            text-align: right;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .forgot-password-link a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .forgot-password-link a:hover {
+            color: #0072ff;
+            text-decoration: underline;
+        }
 
+        .success {
+            color: #4f8a10;
+            background-color: #dff2bf;
+            padding: 10px;
+            border-left: 5px solid #4f8a10;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            animation: fadeIn 0.6s ease;
+        }
     </style>
 </head>
 <body>
 <div class="login-container">
     <h2>Đăng nhập</h2>
-    
 
     <%
     String success = (String) session.getAttribute("success");
     if (success != null) {
-%>
-    <div class="success"><%= success %></div>
-<%
-        session.removeAttribute("success"); // xóa sau khi hiển thị
+    %>
+        <div class="success"><%= success %></div>
+    <%
+        session.removeAttribute("success"); 
     }
-%>
+    %>
 
     <% String error = (String) request.getAttribute("error"); %>
     <% if (error != null) { %>
@@ -145,6 +161,11 @@
         <div class="form-group">
             <label>Mật khẩu</label>
             <input type="password" name="password" required>
+        </div>
+        
+        <!-- --- NÚT QUÊN MẬT KHẨU --- -->
+        <div class="forgot-password-link">
+            <a href="forgot_password.jsp">Quên mật khẩu?</a>
         </div>
 
         <button type="submit" class="btn">Đăng nhập</button>

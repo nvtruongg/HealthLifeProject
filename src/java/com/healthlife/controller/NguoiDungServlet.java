@@ -10,6 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Comparator;
 
 @WebServlet(name = "NguoiDungServlet", urlPatterns = {"/admin_nguoidung"})
 public class NguoiDungServlet extends HttpServlet {
@@ -46,11 +48,50 @@ public class NguoiDungServlet extends HttpServlet {
         }
     }
 
-    private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<NguoiDung> list = nguoiDungService.getAllUsers();
-        request.setAttribute("userList", list);
-        request.getRequestDispatcher("admin_nguoidung.jsp").forward(request, response);
+    //
+private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // 1. Lấy danh sách gốc
+    List<NguoiDung> list = nguoiDungService.getAllUsers();
+    
+    // 2. Lấy tham số sắp xếp từ URL
+    String sortBy = request.getParameter("sortBy"); // id, fullname, email, role
+    String sortOrder = request.getParameter("sortOrder"); // asc, desc
+
+    // Mặc định
+    if (sortBy == null) sortBy = "id";
+    if (sortOrder == null) sortOrder = "asc";
+
+    // 3. Xử lý sắp xếp
+    if (list != null && !list.isEmpty()) {
+        switch (sortBy) {
+            case "fullname":
+                list.sort(Comparator.comparing(NguoiDung::getFullname));
+                break;
+            case "email":
+                list.sort(Comparator.comparing(NguoiDung::getEmail));
+                break;
+            case "role":
+                list.sort(Comparator.comparing(NguoiDung::getRole));
+                break;
+            case "id":
+            default:
+                list.sort(Comparator.comparingInt(NguoiDung::getId));
+                break;
+        }
+
+        // Đảo ngược nếu là desc
+        if ("desc".equals(sortOrder)) {
+            Collections.reverse(list);
+        }
     }
+
+    // 4. Gửi dữ liệu về JSP
+    request.setAttribute("userList", list);
+    request.setAttribute("currentSortBy", sortBy);
+    request.setAttribute("currentSortOrder", sortOrder);
+    
+    request.getRequestDispatcher("admin_nguoidung.jsp").forward(request, response);
+}
 
     private void add(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String fullname = request.getParameter("fullname");

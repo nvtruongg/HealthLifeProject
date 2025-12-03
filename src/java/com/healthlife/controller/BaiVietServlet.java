@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Collections;
+import java.util.Comparator;
 
 @WebServlet(name = "BaiVietServlet", urlPatterns = {"/admin_baiviet"})
 public class BaiVietServlet extends HttpServlet {
@@ -52,11 +54,54 @@ public class BaiVietServlet extends HttpServlet {
         }
     }
 
-    private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<BaiViet> list = baiVietService.getAll();
-        request.setAttribute("baiVietList", list);
-        request.getRequestDispatcher("admin_baiviet.jsp").forward(request, response);
+    //
+private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // 1. Lấy danh sách gốc
+    List<BaiViet> list = baiVietService.getAll();
+    
+    // 2. Lấy tham số sắp xếp
+    String sortBy = request.getParameter("sortBy"); // id, title, author, date, status
+    String sortOrder = request.getParameter("sortOrder"); // asc, desc
+
+    // Mặc định
+    if (sortBy == null) sortBy = "id";
+    if (sortOrder == null) sortOrder = "desc"; // Bài viết thường ưu tiên xem mới nhất
+
+    // 3. Xử lý sắp xếp
+    if (list != null && !list.isEmpty()) {
+        switch (sortBy) {
+            case "title":
+                list.sort(Comparator.comparing(BaiViet::getTieuDe));
+                break;
+            case "author":
+                // Xử lý null khi get tên người tạo
+                list.sort(Comparator.comparing(bv -> bv.getTenNguoiTao() == null ? "" : bv.getTenNguoiTao()));
+                break;
+            case "date":
+                list.sort(Comparator.comparing(BaiViet::getNgayDang));
+                break;
+            case "status":
+                list.sort(Comparator.comparing(BaiViet::getTrangThai));
+                break;
+            case "id":
+            default:
+                list.sort(Comparator.comparingInt(BaiViet::getId));
+                break;
+        }
+
+        // Đảo ngược nếu là desc
+        if ("desc".equals(sortOrder)) {
+            Collections.reverse(list);
+        }
     }
+    
+    // 4. Gửi dữ liệu về JSP
+    request.setAttribute("baiVietList", list);
+    request.setAttribute("currentSortBy", sortBy);
+    request.setAttribute("currentSortOrder", sortOrder);
+
+    request.getRequestDispatcher("admin_baiviet.jsp").forward(request, response);
+}
 
     private void add(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {

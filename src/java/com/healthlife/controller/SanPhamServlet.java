@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Comparator;
 
 @WebServlet(name = "SanPhamServlet", urlPatterns = {"/admin_sanpham"})
 public class SanPhamServlet extends HttpServlet {
@@ -55,9 +57,58 @@ public class SanPhamServlet extends HttpServlet {
         }
     }
 
-    private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 1. Lấy danh sách gốc từ Service
         List<SanPham> list = sanPhamService.getAllProducts();
+
+        // 2. Lấy tham số sắp xếp từ request
+        String sortBy = request.getParameter("sortBy"); // Tên cột: price, name, id...
+        String sortOrder = request.getParameter("sortOrder"); // Chiều: asc, desc
+
+        // Mặc định nếu không có tham số
+        if (sortBy == null) sortBy = "id";
+        if (sortOrder == null) sortOrder = "asc";
+
+        // 3. Xử lý sắp xếp danh sách bằng Java Comparator
+        if (list != null && !list.isEmpty()) {
+            switch (sortBy) {
+                case "price":
+                    list.sort(Comparator.comparing(SanPham::getGiaBan));
+                    break;
+                case "name":
+                    list.sort(Comparator.comparing(SanPham::getTenSanPham));
+                    break;
+                case "code":
+                    list.sort(Comparator.comparing(SanPham::getMaSanPham));
+                    break;
+                case "category":
+            // Sắp xếp theo tên danh mục (xử lý null để tránh lỗi)
+            list.sort(Comparator.comparing(sp -> sp.getTenDanhMuc() == null ? "" : sp.getTenDanhMuc()));
+            break;
+        case "stock":
+            // Sắp xếp theo số lượng tồn (int)
+            list.sort(Comparator.comparingInt(SanPham::getSoLuongTon));
+            break;
+        case "status":
+            // Sắp xếp theo chuỗi trạng thái (dang_kinh_doanh / ngung_kinh_doanh)
+            list.sort(Comparator.comparing(SanPham::getTrangThai));
+            break;
+                default: // mặc định theo ID
+                    list.sort(Comparator.comparingInt(SanPham::getId));
+                    break;
+            }
+
+            // Nếu chiều là giảm dần (desc) thì đảo ngược danh sách
+            if ("desc".equals(sortOrder)) {
+                Collections.reverse(list);
+            }
+        }
+
+        // 4. Gửi danh sách và trạng thái sắp xếp hiện tại về JSP để giữ trạng thái
         request.setAttribute("productList", list);
+        request.setAttribute("currentSortBy", sortBy);
+        request.setAttribute("currentSortOrder", sortOrder);
+        
         request.getRequestDispatcher("admin_sanpham.jsp").forward(request, response);
     }
     

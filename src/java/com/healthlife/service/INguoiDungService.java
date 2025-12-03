@@ -12,4 +12,5 @@ public interface INguoiDungService {
     boolean addUser(NguoiDung user);
     boolean updateUser(NguoiDung user);
     boolean deleteUser(int id);
+    boolean updatePasswordByEmail(String email, String newPassword);
 }

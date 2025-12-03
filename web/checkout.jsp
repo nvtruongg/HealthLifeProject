@@ -226,149 +226,161 @@
                                         <img src="${product.hinhAnhDaiDien}" alt="${product.tenSanPham}" class="order-item-img flex-shrink-0">
                                         <div class="ms-3 flex-grow-1">
                                             <div class="order-item-name">${product.tenSanPham}</div>
+
+                                            <div class="text-muted fst-italic mt-1" style="font-size: 0.8rem;">
+                                                Tồn kho: 
+                                                <span class="${product.soLuongTon < 10 ? 'text-danger fw-bold' : ''}">
+                                                    ${product.soLuongTon}
+                                                </span>
+                                            </div>
                                             <div class="d-flex justify-content-between mt-1">
-                                                <small class="text-muted">SL: ${item.soLuong}</small>
+                                                <small class="text-muted">SL Mua: ${item.soLuong}</small>
                                                 <span class="fw-bold text-primary" style="font-size: 0.95rem;">
                                                     <fmt:formatNumber type="number" maxFractionDigits="0" value="${item.tongTien}" /> đ
                                                 </span>
                                             </div>
+
+                                            <span class="fw-bold text-primary" style="font-size: 0.95rem;">
+                                                <fmt:formatNumber type="number" maxFractionDigits="0" value="${item.tongTien}" /> đ
+                                            </span>
                                         </div>
                                     </div>
-                                </c:forEach>
+                                </div>
+                            </c:forEach>
+                        </div>
+
+                        <!-- Tính tiền -->
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between mb-2 text-muted">
+                                <span>Tạm tính</span>
+                                <span>
+                                    <fmt:formatNumber type="number" maxFractionDigits="0" value="${sessionScope.cart.tongTienHangDaChon}" /> đ
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 text-muted">
+                                <span>Phí vận chuyển</span>
+                                <span>
+                                    <c:if test="${sessionScope.cart.tongTienHangDaChon >= 300000}">Miễn phí</c:if>
+                                    <c:if test="${sessionScope.cart.tongTienHangDaChon < 300000}">15.000 đ</c:if>
+                                    </span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <span class="fw-bold fs-5 text-dark">Tổng cộng</span>
+                                    <span class="fw-bold fs-4 text-danger">
+                                    <c:set var="ship" value="${sessionScope.cart.tongTienHangDaChon >= 300000 ? 0 : 15000}" />
+                                    <fmt:formatNumber type="number" maxFractionDigits="0" value="${sessionScope.cart.tongTienHangDaChon + ship}" /> đ
+                                </span>
                             </div>
 
-                            <!-- Tính tiền -->
-                            <div class="mt-3">
-                                <div class="d-flex justify-content-between mb-2 text-muted">
-                                    <span>Tạm tính</span>
-                                    <span>
-                                        <fmt:formatNumber type="number" maxFractionDigits="0" value="${sessionScope.cart.tongTienHangDaChon}" /> đ
-                                    </span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2 text-muted">
-                                    <span>Phí vận chuyển</span>
-                                    <span>
-                                        <c:if test="${sessionScope.cart.tongTienHangDaChon >= 300000}">Miễn phí</c:if>
-                                        <c:if test="${sessionScope.cart.tongTienHangDaChon < 300000}">15.000 đ</c:if>
-                                        </span>
-                                    </div>
-                                    <hr>
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <span class="fw-bold fs-5 text-dark">Tổng cộng</span>
-                                        <span class="fw-bold fs-4 text-danger">
-                                        <c:set var="ship" value="${sessionScope.cart.tongTienHangDaChon >= 300000 ? 0 : 15000}" />
-                                        <fmt:formatNumber type="number" maxFractionDigits="0" value="${sessionScope.cart.tongTienHangDaChon + ship}" /> đ
-                                    </span>
-                                </div>
+                            <button type="submit" class="btn-confirm">
+                                Đặt Hàng
+                            </button>
 
-                                <button type="submit" class="btn-confirm">
-                                    Đặt Hàng
-                                </button>
-
-                                <div class="text-center">
-                                    <a href="cart-view" class="back-link">
-                                        <i class="bi bi-arrow-left me-1"></i> Quay lại giỏ hàng
-                                    </a>
-                                </div>
+                            <div class="text-center">
+                                <a href="cart-view" class="back-link">
+                                    <i class="bi bi-arrow-left me-1"></i> Quay lại giỏ hàng
+                                </a>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </form>
+
         </div>
+    </form>
+</div>
 
-        <!-- SCRIPT XỬ LÝ ĐỊA CHỈ (API HÀNH CHÍNH VIỆT NAM) -->
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const provinceSelect = document.getElementById('province');
-                const districtSelect = document.getElementById('district');
-                const wardSelect = document.getElementById('ward');
-                const houseInput = document.getElementById('houseNumber');
-                const fullAddressInput = document.getElementById('fullAddress');
-                const form = document.getElementById('checkoutForm');
+<!-- SCRIPT XỬ LÝ ĐỊA CHỈ (API HÀNH CHÍNH VIỆT NAM) -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const provinceSelect = document.getElementById('province');
+        const districtSelect = document.getElementById('district');
+        const wardSelect = document.getElementById('ward');
+        const houseInput = document.getElementById('houseNumber');
+        const fullAddressInput = document.getElementById('fullAddress');
+        const form = document.getElementById('checkoutForm');
 
-                // 1. Load Tỉnh/Thành phố
-                // Sử dụng API public miễn phí: https://provinces.open-api.vn/
-                // Hoặc https://esgoo.net/api-tinhthanh/ (Khuyên dùng cái này vì nó nhẹ và trả về JSON chuẩn)
-                axios.get('https://esgoo.net/api-tinhthanh/1/0.htm')
+        // 1. Load Tỉnh/Thành phố
+        // Sử dụng API public miễn phí: https://provinces.open-api.vn/
+        // Hoặc https://esgoo.net/api-tinhthanh/ (Khuyên dùng cái này vì nó nhẹ và trả về JSON chuẩn)
+        axios.get('https://esgoo.net/api-tinhthanh/1/0.htm')
+                .then(response => {
+                    if (response.data.error === 0) {
+                        renderOptions(provinceSelect, response.data.data, 'Chọn Tỉnh/Thành');
+                    }
+                })
+                .catch(error => console.error('Lỗi load tỉnh:', error));
+
+        // 2. Sự kiện chọn Tỉnh -> Load Huyện
+        provinceSelect.addEventListener('change', function () {
+            districtSelect.innerHTML = '<option value="">Đang tải...</option>';
+            wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+            wardSelect.disabled = true;
+
+            if (this.value) {
+                axios.get(`https://esgoo.net/api-tinhthanh/2/` + this.value + `.htm`)
                         .then(response => {
                             if (response.data.error === 0) {
-                                renderOptions(provinceSelect, response.data.data, 'Chọn Tỉnh/Thành');
+                                renderOptions(districtSelect, response.data.data, 'Chọn Quận/Huyện');
+                                districtSelect.disabled = false;
                             }
-                        })
-                        .catch(error => console.error('Lỗi load tỉnh:', error));
+                        });
+            } else {
+                districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+                districtSelect.disabled = true;
+            }
+        });
 
-                // 2. Sự kiện chọn Tỉnh -> Load Huyện
-                provinceSelect.addEventListener('change', function () {
-                    districtSelect.innerHTML = '<option value="">Đang tải...</option>';
-                    wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
-                    wardSelect.disabled = true;
+        // 3. Sự kiện chọn Huyện -> Load Xã
+        districtSelect.addEventListener('change', function () {
+            wardSelect.innerHTML = '<option value="">Đang tải...</option>';
 
-                    if (this.value) {
-                        axios.get(`https://esgoo.net/api-tinhthanh/2/` + this.value + `.htm`)
-                                .then(response => {
-                                    if (response.data.error === 0) {
-                                        renderOptions(districtSelect, response.data.data, 'Chọn Quận/Huyện');
-                                        districtSelect.disabled = false;
-                                    }
-                                });
-                    } else {
-                        districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
-                        districtSelect.disabled = true;
-                    }
-                });
+            if (this.value) {
+                axios.get(`https://esgoo.net/api-tinhthanh/3/` + this.value + `.htm`)
+                        .then(response => {
+                            if (response.data.error === 0) {
+                                renderOptions(wardSelect, response.data.data, 'Chọn Phường/Xã');
+                                wardSelect.disabled = false;
+                            }
+                        });
+            } else {
+                wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+                wardSelect.disabled = true;
+            }
+        });
 
-                // 3. Sự kiện chọn Huyện -> Load Xã
-                districtSelect.addEventListener('change', function () {
-                    wardSelect.innerHTML = '<option value="">Đang tải...</option>';
-
-                    if (this.value) {
-                        axios.get(`https://esgoo.net/api-tinhthanh/3/` + this.value + `.htm`)
-                                .then(response => {
-                                    if (response.data.error === 0) {
-                                        renderOptions(wardSelect, response.data.data, 'Chọn Phường/Xã');
-                                        wardSelect.disabled = false;
-                                    }
-                                });
-                    } else {
-                        wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
-                        wardSelect.disabled = true;
-                    }
-                });
-
-                // Hàm Render Option
-                function renderOptions(selectElement, data, defaultLabel) {
-                    let html = '<option value="">' + defaultLabel + '</option>';
-                    data.forEach(item => {
-                        // value là ID (để load con), text hiển thị là tên (full_name)
-                        html += '<option value="' + item.id + '" data-name="' + item.full_name + '">' + item.full_name + '</option>';
-                    });
-                    selectElement.innerHTML = html;
-                }
-
-                // 4. Trước khi Submit Form -> Ghép chuỗi địa chỉ
-                form.addEventListener('submit', function (e) {
-                    const provinceName = provinceSelect.options[provinceSelect.selectedIndex]?.getAttribute('data-name');
-                    const districtName = districtSelect.options[districtSelect.selectedIndex]?.getAttribute('data-name');
-                    const wardName = wardSelect.options[wardSelect.selectedIndex]?.getAttribute('data-name');
-                    const houseVal = houseInput.value.trim();
-
-                    if (!provinceName || !districtName || !wardName || !houseVal) {
-                        e.preventDefault();
-                        alert("Vui lòng chọn đầy đủ thông tin địa chỉ!");
-                        return;
-                    }
-
-                    // Tạo chuỗi địa chỉ đầy đủ: "Số 10, Phường X, Quận Y, Tỉnh Z"
-                    const finalAddress = houseVal + ", " + wardName + ", " + districtName + ", " + provinceName;
-
-                    // Gán vào input hidden
-                    fullAddressInput.value = finalAddress;
-                });
+        // Hàm Render Option
+        function renderOptions(selectElement, data, defaultLabel) {
+            let html = '<option value="">' + defaultLabel + '</option>';
+            data.forEach(item => {
+                // value là ID (để load con), text hiển thị là tên (full_name)
+                html += '<option value="' + item.id + '" data-name="' + item.full_name + '">' + item.full_name + '</option>';
             });
-        </script>
+            selectElement.innerHTML = html;
+        }
 
-    </body>
+        // 4. Trước khi Submit Form -> Ghép chuỗi địa chỉ
+        form.addEventListener('submit', function (e) {
+            const provinceName = provinceSelect.options[provinceSelect.selectedIndex]?.getAttribute('data-name');
+            const districtName = districtSelect.options[districtSelect.selectedIndex]?.getAttribute('data-name');
+            const wardName = wardSelect.options[wardSelect.selectedIndex]?.getAttribute('data-name');
+            const houseVal = houseInput.value.trim();
+
+            if (!provinceName || !districtName || !wardName || !houseVal) {
+                e.preventDefault();
+                alert("Vui lòng chọn đầy đủ thông tin địa chỉ!");
+                return;
+            }
+
+            // Tạo chuỗi địa chỉ đầy đủ: "Số 10, Phường X, Quận Y, Tỉnh Z"
+            const finalAddress = houseVal + ", " + wardName + ", " + districtName + ", " + provinceName;
+
+            // Gán vào input hidden
+            fullAddressInput.value = finalAddress;
+        });
+    });
+</script>
+
+</body>
 </html>

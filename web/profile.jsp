@@ -91,10 +91,7 @@
 
         <c:if test="${not empty user}">
             <!-- Hàng thông tin -->
-            <div class="info-row">
-                <span class="profile-label">ID: </span>
-                <span>${user.id}</span>
-            </div>
+            
 
             <div class="info-row">
                 <span class="profile-label">Họ Tên: </span>
@@ -111,15 +108,8 @@
                 <span>${user.sdt}</span>
             </div>
 
-            <div class="info-row">
-                <span class="profile-label">Vai Trò: </span>
-                <span>${user.role}</span>
-            </div>
+            
 
-            <div class="info-row">
-                <span class="profile-label">Trạng Thái: </span>
-                <span>${user.status}</span>
-            </div>
 
             <div class="info-row">
                 <span class="profile-label">Ngày Tạo: </span>

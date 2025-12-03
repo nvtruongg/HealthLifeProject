@@ -41,17 +41,122 @@
                 <div class="bg-white rounded-xl shadow-lg p-6 overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mã SP</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tên Sản phẩm</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Danh mục</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Giá Bán</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tồn kho</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Hành động</th>
-                            </tr>
-                        </thead>
+    <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=id&sortOrder=${currentSortBy == 'id' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                ID
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'id'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=code&sortOrder=${currentSortBy == 'code' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Mã SP
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'code'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+        
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=name&sortOrder=${currentSortBy == 'name' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Tên Sản phẩm
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'name'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=category&sortOrder=${currentSortBy == 'category' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Danh mục
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'category'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=price&sortOrder=${currentSortBy == 'price' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Giá Bán
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'price'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=stock&sortOrder=${currentSortBy == 'stock' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Tồn kho
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'stock'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 transition-colors select-none">
+            <a href="admin_sanpham?action=list&sortBy=status&sortOrder=${currentSortBy == 'status' && currentSortOrder == 'asc' ? 'desc' : 'asc'}" class="flex items-center group w-full h-full">
+                Trạng thái
+                <span class="ml-1 inline-block w-4">
+                    <c:choose>
+                        <c:when test="${currentSortBy == 'status'}">
+                            <i class="fas ${currentSortOrder == 'asc' ? 'fa-sort-up' : 'fa-sort-down'} text-blue-600"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fas fa-sort text-gray-300 group-hover:text-gray-400"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+            </a>
+        </th>
+        
+        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Hành động</th>
+    </tr>
+</thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <c:forEach var="p" items="${productList}">
                                 <tr class="hover:bg-gray-50">
