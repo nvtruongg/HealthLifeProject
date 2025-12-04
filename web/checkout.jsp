@@ -114,6 +114,7 @@
             }
         </style>
     </head>
+    <jsp:include page="cskh.jsp" />
     <body>
 
         <div class="container checkout-container mt-4 mb-5">

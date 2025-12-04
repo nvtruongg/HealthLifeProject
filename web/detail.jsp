@@ -109,6 +109,7 @@
             }
         </style>
     </head>
+    <jsp:include page="cskh.jsp" />
     <body>
         <div class="container mt-4">
             <c:if test="${not empty product}">
