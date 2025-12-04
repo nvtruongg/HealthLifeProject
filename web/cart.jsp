@@ -132,7 +132,8 @@
                                 <div>
                                     <form action="cart-handler" method="POST" id="form-toggle-all" class="d-inline">
                                         <input type="hidden" name="action" value="toggle-all">
-                                        <input class="form-check-input" type="checkbox" id="checkAll" checked>
+                                        <input class="form-check-input" type="checkbox" id="checkAll" name="checkAll"
+                                               <c:if test="${cart.isAllSelected()}">checked</c:if>>
                                         <label class="form-check-label fw-500" for="checkAll" style="font-size: 1rem;">
                                             Chọn tất cả (${sessionScope.cart.tongSoLuongTatCaItems})
                                         </label>
@@ -167,7 +168,7 @@
                                                 <input class="form-check-input me-3" type="checkbox" ${item.selected ? 'checked' : ''} onchange="this.form.submit()">
                                             </form>
                                             <!-- Ảnh -->
-                                            <img src="${product.hinhAnhDaiDien}" alt="${product.tenSanPham}" style="width: 70px; height: 70px; object-fit: contain; border: 1px solid #eee; border-radius: 8px;">
+                                            <img src="assets/images/${product.id}.jpg" alt="${product.tenSanPham}" style="width: 70px; height: 70px; object-fit: contain; border: 1px solid #eee; border-radius: 8px;">
                                             <!-- Tên -->
                                             <div class="ms-3 flex-grow-1">
                                                 <a href="detail?pid=${product.id}" class="product-name">${product.tenSanPham}</a>
@@ -273,7 +274,7 @@
             </c:if>
         </div>
 
-        <!-- 4. MODAL XÁC NHẬN XÓA (Như ảnh 2) -->
+        <!-- 4. MODAL XÁC NHẬN XÓA -->
         <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                 <div class="modal-content border-0 rounded-3 shadow-lg">
@@ -353,13 +354,30 @@
                 // --- Logic cho Checkbox "Chọn tất cả" ---
                 const checkAllBox = document.getElementById('checkAll');
                 if (checkAllBox) {
-                    // Đặt trạng thái checkbox dựa trên dữ liệu server (cần thêm hàm isAllSelected vào Cart model để dùng ở đây nếu muốn chính xác 100%)
-                    // Hoặc đơn giản là khi click thì submit form
                     checkAllBox.addEventListener('change', function () {
+                        const isChecked = this.checked;
+                        // Lấy tất cả checkbox item trong giỏ hàng
+                        const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+                        itemCheckboxes.forEach(cb => {
+                            cb.checked = isChecked;
+                        });
+
+                        // Nếu vẫn muốn submit form để cập nhật server
                         document.getElementById('form-toggle-all').submit();
                     });
+
+                    // Đồng bộ ngược lại: nếu bỏ chọn một item thì "Chọn tất cả" cũng bỏ
+                    const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+                    itemCheckboxes.forEach(cb => {
+                        cb.addEventListener('change', function () {
+                            const allItems = document.querySelectorAll('.item-checkbox');
+                            const checkedItems = document.querySelectorAll('.item-checkbox:checked');
+                            checkAllBox.checked = (allItems.length === checkedItems.length);
+                        });
+                    });
                 }
-                
+
+
             });
         </script>
         <%@include file="footer.jsp" %>

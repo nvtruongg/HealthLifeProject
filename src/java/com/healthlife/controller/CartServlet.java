@@ -97,8 +97,8 @@ public class CartServlet extends HttpServlet {
                     break;
                 case "toggle-all":
                     // Logic: Nếu đang chưa chọn hết -> Chọn hết. Nếu đã chọn hết -> Bỏ chọn hết.
-                    boolean targetState = !cart.isAllSelected();
-                    cart.setAllSelected(targetState);
+                    boolean selectAll = request.getParameter("checkAll") != null;
+                    cart.setAllSelected(selectAll);
                     break;
             }
 
@@ -136,7 +136,7 @@ public class CartServlet extends HttpServlet {
                 out.print(jsonResponse);
                 out.flush();
             } else {
-                response.sendRedirect("home");
+                response.sendRedirect("shop");
             }
         }
     }

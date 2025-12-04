@@ -44,13 +44,14 @@ public class CheckoutServlet extends HttpServlet {
         if (obj != null && obj instanceof Cart) {
             return (Cart) obj; // Ép kiểu an toàn
         } else {
-            // Nếu null hoặc bị sai kiểu (là HashMap), ta reset lại
+            // Nếu null hoặc bị sai kiểu (là HashMap), reset lại
             System.out.println("DEBUG: Phát hiện giỏ hàng bị sai kiểu dữ liệu (" + (obj == null ? "null" : obj.getClass().getName()) + "). Đang reset...");
             Cart newCart = new Cart();
             session.setAttribute("cart", newCart); // Ghi đè lại cho đúng
             return newCart;
         }
     }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -63,21 +64,20 @@ public class CheckoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("------------ CHECKOUT SERVLET PHIEN BAN MOI DA CHAY ------------");
         HttpSession session = request.getSession();
 
         // 1. Yêu cầu đăng nhập (Rất quan trọng)
         NguoiDung user = (NguoiDung) session.getAttribute("user");
         if (user == null) {
-            response.sendRedirect("login.jsp"); // Chuyển đến trang đăng nhập
+            response.sendRedirect("login.jsp");
             return;
         }
 
         // 2. Yêu cầu giỏ hàng không được rỗng
         Cart cart = getCartFromSession(session);
-        
+
         if (cart == null || cart.getTongSoLuongItemsDaChon() == 0) {
-            response.sendRedirect("cart-view"); // Về giỏ hàng
+            response.sendRedirect("cart-view");
             return;
         }
 
@@ -115,6 +115,17 @@ public class CheckoutServlet extends HttpServlet {
         String tenNguoiNhan = request.getParameter("tenNguoiNhan");
         String soDienThoai = request.getParameter("soDienThoai");
         String diaChiGiaoHang = request.getParameter("diaChiGiaoHang");
+        String paymentMethod = request.getParameter("paymentMethod");
+        // 2.1 Kiểm tra payment method
+        if (paymentMethod == null || paymentMethod.equals("banking")) {
+            request.setAttribute("errorMessage",
+                    "Chức năng thanh toán chuyển khoản đang phát triển. Vui lòng chọn COD!");
+
+            request.setAttribute("forceCod", true);  // JSP sẽ tự chuyển radio về COD
+
+            request.getRequestDispatcher("checkout.jsp").forward(request, response);
+            return;
+        }
 
         try {
             // 3. Chuẩn bị đối tượng DonHang

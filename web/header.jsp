@@ -24,7 +24,7 @@
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center text-white flex-shink-0" href="index">
-                <img src="Images/logoHL.png" alt="HealthLife" height="70" class="me-2 p-0 logo-img">
+                <img src="assets/images/logoHL.png" alt="HealthLife" height="70" class="me-2 p-0 logo-img">
                 <div>
                     <strong>HEALTHLIFE</strong><br>
                     <small class="text-light">Thương hiệu uy tín</small>

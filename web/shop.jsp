@@ -31,7 +31,7 @@
             }
             .filter-header {
                 font-weight: 700;
-                font-size: 1.1rem;
+                font-size: 0.9rem;
                 margin-bottom: 1rem;
                 display: flex;
                 align-items: center;
@@ -87,7 +87,7 @@
                 color: #333;
                 margin: 0;
             }
-.sort-options {
+            .sort-options {
                 display: flex;
                 gap: 8px;
                 align-items: center;
@@ -178,7 +178,7 @@
                 text-decoration: line-through;
                 margin-left: 4px;
             }
-.btn-buy {
+            .btn-buy {
                 background-color: #003D9D;
                 color: white;
                 border: none;
@@ -232,7 +232,7 @@
             <!-- Breadcrumb (Đường dẫn) -->
             <nav aria-label="breadcrumb" class="mb-2" style="font-size: 0.85rem;">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index" class="text-decoration-none text-muted">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="shop" class="text-decoration-none text-muted">Trang chủ</a></li>
                     <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">${pageTitle}</li>
                 </ol>
             </nav>
@@ -255,7 +255,7 @@
 
                             <!-- 1. Lọc theo Giá -->
                             <div class="mb-3">
-<div class="filter-group-title">Giá bán <i class="bi bi-chevron-up"></i></div>
+                                <div class="filter-group-title">Giá bán <i class="bi bi-chevron-up"></i></div>
                                 <div>
                                     <label class="price-option ${param.price == '0-100000' ? 'active' : ''}">
                                         <input type="radio" name="price" value="0-100000" class="filter-radio" onchange="this.form.submit()">
@@ -291,7 +291,7 @@
 
                                             <!-- Tùy chọn 'Tất cả' để người dùng có thể bỏ chọn -->
                                             <div class="form-check">
-<input class="form-check-input" type="radio" name="bid" value="" id="brand_all" 
+                                                <input class="form-check-input" type="radio" name="bid" value="" id="brand_all" 
                                                        ${empty param.bid ? 'checked' : ''} onchange="this.form.submit()">
                                                 <label class="form-check-label" for="brand_all">
                                                     Tất cả
@@ -336,7 +336,7 @@
                 <!-- === CỘT PHẢI: DANH SÁCH SẢN PHẨM === -->
                 <div class="col-lg-10">
                     <!-- Header: Tên danh mục & Sắp xếp -->
-<div class="shop-header py-2 px-3" >
+                    <div class="shop-header py-2 px-3" >
                         <!-- Tiêu đề danh mục -->
                         <h1 class="category-title">${pageTitle}</h1>
 
@@ -366,7 +366,7 @@
                             <div class="col-6 col-md-4 col-lg-3 product-item">
                                 <div class="product-card h-100">
                                     <a href="detail?pid=${p.id}" class="card-img-wrapper">
-                                        <img src="Images/${p.id}.jpg" class="card-img-top" onerror="this.src='${p.hinhAnhDaiDien}'">
+                                        <img src="assets/images/${p.id}.jpg" class="card-img-top" onerror="this.src='${p.hinhAnhDaiDien}'">
                                     </a>
                                     <div class="card-body">
                                         <h5 class="card-title">
@@ -383,7 +383,7 @@
                                                 </span>
                                                 <c:if test="${p.giaGoc > p.giaBan}">
                                                     <span class="original-price">
-<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaGoc}" /> đ
+                                                        <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaGoc}" /> đ
                                                     </span>
                                                 </c:if>
                                             </div>
@@ -440,7 +440,7 @@
                 // Gán giá trị vào input ẩn
                 document.getElementById('sortInput').value = sortType;
                 // Submit form bộ lọc để giữ nguyên các điều kiện lọc khác (giá, danh mục...)
-document.getElementById('filterForm').submit();
+                document.getElementById('filterForm').submit();
             }
 
             document.addEventListener("DOMContentLoaded", function () {
@@ -499,7 +499,7 @@ document.getElementById('filterForm').submit();
                                     }
                                 })
                                 .catch(error => console.error('Error:', error));
-});
+                    });
                 });
             });
         </script>
