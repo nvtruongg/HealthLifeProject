@@ -1,24 +1,22 @@
-<%-- 
-    Document   : home.jsp
-    Created on : Oct 25, 2025, 6:20:41 PM
-    Author     : Nguyen Viet Truong
+<%--
+    Document : search.jsp
+    Created on : Nov 07, 2025, 10:00:00 AM
+    Author : Nguyen Viet Truong
 --%>
-
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
-<%-- Thêm thư viện JSTL (Rất quan trọng) --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- Thêm thư viện format số và tiền tệ --%>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
-
+<%@ include file="header.jsp" %>  <!-- Include header -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Trang chủ - HealthLife</title>
-        
+        <title>Kết Quả Tìm Kiếm - HealthLife</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Thêm CSS tùy chỉnh cho Card sản phẩm -->
+        <!-- Thêm CSS từ home.jsp -->
         <style>
             .product-card {
                 transition: box-shadow 0.3s ease;
@@ -49,78 +47,43 @@
             }
         </style>
     </head>
+    <jsp:include page="cskh.jsp" />
     <body>
-
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="home">HealthLife</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="home">Trang Chủ</a>
-                        </li>
-                        
-                        <c:forEach items="${listC}" var="cat">
-                            <li class="nav-item">
-                                <a class="nav-link" href="shop?cid=${cat.id}">${cat.tenDanhMuc}</a>
-                            </li>
-                        </c:forEach>
-                        
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
+       
+        
         <!-- Phần nội dung chính -->
         <div class="container mt-4">
             <div class="row">
                 <!-- Tiêu đề trang -->
                 <div class="col-12">
-                    <h1 class="mb-3">Sản phẩm Nổi Bật</h1>
+                    <h1 class="mb-3">Kết Quả Tìm Kiếm Cho: "${keyword}"</h1>
                 </div>
-
-                <!-- PHẦN MỚI: Hiển thị sản phẩm -->
-                <!-- Lặp qua danh sách sản phẩm "listP" -->
+                <!-- Hiển thị sản phẩm giống home.jsp -->
                 <c:forEach items="${listP}" var="p">
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <!-- Sử dụng Bootstrap Card -->
                         <div class="card h-100 product-card">
-                            <!-- Link đến trang chi tiết sản phẩm (sẽ làm sau) -->
-                            <a href="#"> 
-                                <!-- Ảnh sản phẩm -->
+                            <a href="detail?pid=${p.id}">
                                 <img src="${p.hinhAnhDaiDien}" class="card-img-top" alt="${p.tenSanPham}">
                             </a>
                             <div class="card-body d-flex flex-column">
-                                <!-- Tên sản phẩm -->
                                 <h5 class="card-title">
-                                    <a href="#" class="text-dark text-decoration-none">${p.tenSanPham}</a>
+                                    <a href="detail?pid=${p.id}">${p.tenSanPham}</a>
                                 </h5>
-                                
-                                <!-- Giá sản phẩm -->
                                 <p class="card-text card-price mt-auto">
-                                    <%-- Định dạng giá tiền kiểu Việt Nam --%>
-                                    <fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${p.giaBan}" /> đ
+                                    <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.giaBan}" /> đ
                                 </p>
-                                
-                                <!-- Nút Thêm vào giỏ (sẽ làm sau) -->
                                 <a href="#" class="btn btn-primary mt-2">Thêm vào giỏ</a>
                             </div>
                         </div>
                     </div>
                 </c:forEach>
-               
                 <c:if test="${empty listP}">
                     <div class="col-12">
-                        <p class="text-center text-muted">Không có sản phẩm nào để hiển thị.</p>
+                        <p class="text-center text-muted">Không tìm thấy sản phẩm nào phù hợp với "${keyword}".</p>
                     </div>
                 </c:if>
-
             </div>
         </div>
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

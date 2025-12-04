@@ -4,13 +4,6 @@
  */
 package com.healthlife.controller;
 
-import com.healthlife.service.DanhMucService;
-import com.healthlife.service.IDanhMucService;
-import com.healthlife.service.ISanPhamService;
-import com.healthlife.service.SanPhamService;
-
-import com.healthlife.model.DanhMuc;
-import com.healthlife.model.SanPham;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,14 +11,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
  * @author Nguyen Viet Truong
  */
-@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "CartViewServlet", urlPatterns = {"/cart-view"})
+public class CartViewServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,41 +28,23 @@ public class HomeServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    // 1. Khởi tạo
-    //Controller phụ thuộc vào I
-    IDanhMucService danhMucService;
-    ISanPhamService sanPhamService;
-
-    @Override
-    public void init() {
-        danhMucService = new DanhMucService();
-        sanPhamService = new SanPhamService();
-    }
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        //1. Controller gọi Service lấy dữ liệu
-        List<DanhMuc> listCategories = danhMucService.getAllCategories();
-        List<SanPham> listProducts = sanPhamService.getAllProducts();
-        
-        //2. Đặt dữ liệu lên request
-        request.setAttribute("listC", listCategories);
-        request.setAttribute("listP", listProducts);
-        
-        //3. Ddieeeeeeu hướng sang home.jsp
-        request.getRequestDispatcher("home.jsp").forward(request, response);
-        
+        Object obj = request.getSession().getAttribute("cart");
+        if (obj == null || !(obj instanceof com.healthlife.model.Cart)) {
+            request.getSession().setAttribute("cart", new com.healthlife.model.Cart());
+        }
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeServlet</title>");
+            out.println("<title>Servlet CartViewServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CartViewServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

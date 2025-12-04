@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.healthlife.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
-/**
- *
- * @author Nguyen Viet Truong
- */
 public class SanPham {
     private int id;
     private String maSanPham;
@@ -23,11 +16,37 @@ public class SanPham {
     private int soLuongTon;
     private String donViTinh;
     private String hinhAnhDaiDien;
+    private String thanhPhan;
+    private String congDung;
+    private String lieuDungCachDung;
+    private String baoQuan;
+    private String trangThai; // 'dang_kinh_doanh', 'ngung_kinh_doanh'
+    private Timestamp ngayTao;
+    private Timestamp ngayCapNhat;
+
+    // Thuộc tính bổ sung để hiển thị tên (JOIN bảng)
+    private String tenDanhMuc;
+    private String tenThuongHieu;
 
     public SanPham() {
     }
+    // Kiểm tra có giảm giá không (Giá gốc > Giá bán)
+    public boolean hasDiscount() {
+        return giaGoc != null && giaBan != null && giaGoc.compareTo(giaBan) > 0;
+    }
 
-    public SanPham(int id, String maSanPham, String tenSanPham, int idDanhMuc, int idThuongHieu, String moTaNgan, String moTaChiTiet, BigDecimal giaGoc, BigDecimal giaBan, int soLuongTon, String donViTinh, String hinhAnhDaiDien) {
+    // Tính % giảm giá: (GiaGoc - GiaBan) / GiaGoc * 100
+    public int getDiscountPercentage() {
+        if (hasDiscount()) {
+            BigDecimal discount = giaGoc.subtract(giaBan);
+            return discount.divide(giaGoc, 2, java.math.RoundingMode.HALF_UP)
+                           .multiply(new BigDecimal(100)).intValue();
+        }
+        return 0;
+    }
+
+    // Constructor đầy đủ
+    public SanPham(int id, String maSanPham, String tenSanPham, int idDanhMuc, int idThuongHieu, String moTaNgan, String moTaChiTiet, BigDecimal giaGoc, BigDecimal giaBan, int soLuongTon, String donViTinh, String hinhAnhDaiDien, String thanhPhan, String congDung, String lieuDungCachDung, String baoQuan, String trangThai, Timestamp ngayTao, Timestamp ngayCapNhat) {
         this.id = id;
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
@@ -40,106 +59,76 @@ public class SanPham {
         this.soLuongTon = soLuongTon;
         this.donViTinh = donViTinh;
         this.hinhAnhDaiDien = hinhAnhDaiDien;
+        this.thanhPhan = thanhPhan;
+        this.congDung = congDung;
+        this.lieuDungCachDung = lieuDungCachDung;
+        this.baoQuan = baoQuan;
+        this.trangThai = trangThai;
+        this.ngayTao = ngayTao;
+        this.ngayCapNhat = ngayCapNhat;
     }
 
-    public int getId() {
-        return id;
-    }
+    // --- Getters and Setters ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getMaSanPham() { return maSanPham; }
+    public void setMaSanPham(String maSanPham) { this.maSanPham = maSanPham; }
 
-    public String getMaSanPham() {
-        return maSanPham;
-    }
+    public String getTenSanPham() { return tenSanPham; }
+    public void setTenSanPham(String tenSanPham) { this.tenSanPham = tenSanPham; }
 
-    public void setMaSanPham(String maSanPham) {
-        this.maSanPham = maSanPham;
-    }
+    public int getIdDanhMuc() { return idDanhMuc; }
+    public void setIdDanhMuc(int idDanhMuc) { this.idDanhMuc = idDanhMuc; }
 
-    public String getTenSanPham() {
-        return tenSanPham;
-    }
+    public int getIdThuongHieu() { return idThuongHieu; }
+    public void setIdThuongHieu(int idThuongHieu) { this.idThuongHieu = idThuongHieu; }
 
-    public void setTenSanPham(String tenSanPham) {
-        this.tenSanPham = tenSanPham;
-    }
+    public String getMoTaNgan() { return moTaNgan; }
+    public void setMoTaNgan(String moTaNgan) { this.moTaNgan = moTaNgan; }
 
-    public int getIdDanhMuc() {
-        return idDanhMuc;
-    }
+    public String getMoTaChiTiet() { return moTaChiTiet; }
+    public void setMoTaChiTiet(String moTaChiTiet) { this.moTaChiTiet = moTaChiTiet; }
 
-    public void setIdDanhMuc(int idDanhMuc) {
-        this.idDanhMuc = idDanhMuc;
-    }
+    public BigDecimal getGiaGoc() { return giaGoc; }
+    public void setGiaGoc(BigDecimal giaGoc) { this.giaGoc = giaGoc; }
 
-    public int getIdThuongHieu() {
-        return idThuongHieu;
-    }
+    public BigDecimal getGiaBan() { return giaBan; }
+    public void setGiaBan(BigDecimal giaBan) { this.giaBan = giaBan; }
 
-    public void setIdThuongHieu(int idThuongHieu) {
-        this.idThuongHieu = idThuongHieu;
-    }
+    public int getSoLuongTon() { return soLuongTon; }
+    public void setSoLuongTon(int soLuongTon) { this.soLuongTon = soLuongTon; }
 
-    public String getMoTaNgan() {
-        return moTaNgan;
-    }
+    public String getDonViTinh() { return donViTinh; }
+    public void setDonViTinh(String donViTinh) { this.donViTinh = donViTinh; }
 
-    public void setMoTaNgan(String moTaNgan) {
-        this.moTaNgan = moTaNgan;
-    }
+    public String getHinhAnhDaiDien() { return hinhAnhDaiDien; }
+    public void setHinhAnhDaiDien(String hinhAnhDaiDien) { this.hinhAnhDaiDien = hinhAnhDaiDien; }
 
-    public String getMoTaChiTiet() {
-        return moTaChiTiet;
-    }
+    public String getThanhPhan() { return thanhPhan; }
+    public void setThanhPhan(String thanhPhan) { this.thanhPhan = thanhPhan; }
 
-    public void setMoTaChiTiet(String moTaChiTiet) {
-        this.moTaChiTiet = moTaChiTiet;
-    }
+    public String getCongDung() { return congDung; }
+    public void setCongDung(String congDung) { this.congDung = congDung; }
 
-    public BigDecimal getGiaGoc() {
-        return giaGoc;
-    }
+    public String getLieuDungCachDung() { return lieuDungCachDung; }
+    public void setLieuDungCachDung(String lieuDungCachDung) { this.lieuDungCachDung = lieuDungCachDung; }
 
-    public void setGiaGoc(BigDecimal giaGoc) {
-        this.giaGoc = giaGoc;
-    }
+    public String getBaoQuan() { return baoQuan; }
+    public void setBaoQuan(String baoQuan) { this.baoQuan = baoQuan; }
 
-    public BigDecimal getGiaBan() {
-        return giaBan;
-    }
+    public String getTrangThai() { return trangThai; }
+    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
 
-    public void setGiaBan(BigDecimal giaBan) {
-        this.giaBan = giaBan;
-    }
+    public Timestamp getNgayTao() { return ngayTao; }
+    public void setNgayTao(Timestamp ngayTao) { this.ngayTao = ngayTao; }
 
-    public int getSoLuongTon() {
-        return soLuongTon;
-    }
+    public Timestamp getNgayCapNhat() { return ngayCapNhat; }
+    public void setNgayCapNhat(Timestamp ngayCapNhat) { this.ngayCapNhat = ngayCapNhat; }
 
-    public void setSoLuongTon(int soLuongTon) {
-        this.soLuongTon = soLuongTon;
-    }
+    public String getTenDanhMuc() { return tenDanhMuc; }
+    public void setTenDanhMuc(String tenDanhMuc) { this.tenDanhMuc = tenDanhMuc; }
 
-    public String getDonViTinh() {
-        return donViTinh;
-    }
-
-    public void setDonViTinh(String donViTinh) {
-        this.donViTinh = donViTinh;
-    }
-
-    public String getHinhAnhDaiDien() {
-        return hinhAnhDaiDien;
-    }
-
-    public void setHinhAnhDaiDien(String hinhAnhDaiDien) {
-        this.hinhAnhDaiDien = hinhAnhDaiDien;
-    }
-    
-    @Override
-    public String toString() {
-        return "SanPham{" + "id=" + id + ", tenSanPham=" + tenSanPham + ", giaBan=" + giaBan + '}';
-    }
+    public String getTenThuongHieu() { return tenThuongHieu; }
+    public void setTenThuongHieu(String tenThuongHieu) { this.tenThuongHieu = tenThuongHieu; }
 }
