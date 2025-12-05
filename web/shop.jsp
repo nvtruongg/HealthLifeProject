@@ -226,7 +226,6 @@
             }
         </style>
     </head>
-    <jsp:include page="cskh.jsp" />
     <body>
 
         <div class="container-fluid px-4 mt-3 mb-5">

@@ -283,7 +283,6 @@
             }
         </style>
     </head>
-    <jsp:include page="cskh.jsp" />
     <body>
 
         <c:if test="${empty product}">

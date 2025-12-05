@@ -20,7 +20,6 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </head>
-<jsp:include page="cskh.jsp" />
 <body>
     <!-- Header Navigation -->
     <jsp:include page="header.jsp" />
