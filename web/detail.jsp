@@ -407,7 +407,7 @@
                             <c:forEach items="${relatedProducts}" var="p">
                                 <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
                                     <a href="detail?pid=${p.id}" class="flex-shrink-0">
-                                        <img src="${p.hinhAnhDaiDien}" style="width: 60px; height: 60px; object-fit: contain; border: 1px solid #eee; border-radius: 6px;">
+                                        <img src="assets/images/${p.id}.jpg" style="width: 60px; height: 60px; object-fit: contain; border: 1px solid #eee; border-radius: 6px;">
                                     </a>
                                     <div>
                                         <a href="detail?pid=${p.id}" class="text-decoration-none text-dark fw-bold small d-block mb-1">
